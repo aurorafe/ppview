@@ -158,6 +158,19 @@
     ]
   });
 
+  // 监听地图左键事件
+  Maps.map.on('mouseDownEvent', function (event) {
+    console.log(event.value)
+    var coordinate = event.originEvent.coordinate;
+    var feature = event.value;
+    if (feature && coordinate && feature.getGeometry()) {
+      var closestPoint = feature.getGeometry().getClosestPoint(coordinate);
+      if (closestPoint) {
+        ppv.locate(3, closestPoint[0], closestPoint[1], 0);
+      }
+    }
+  })
+
   addLine();
 
   // 添加实景所在路线
