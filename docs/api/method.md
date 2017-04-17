@@ -9,7 +9,7 @@
 
 | 参数url | type | example |
 | :---: | :---: | :---: |
-| WebService服务地址 | String | "http://192.168.11.233:8022/PPVisionServer.asmx" |
+| WebService服务地址 | String | "http://192.168.0.226:8013/PPVServer.asmx" |
 
 > 返回数据
 
