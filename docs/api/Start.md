@@ -17,4 +17,5 @@ PPVision是图行移动测量系统嵌入式开发控件，该控件可访问网
 
 ```html
 <script type="text/javascript" src="../dist/js/ppv.min.js"></script>
+<script type="text/javascript" src="../dist/js/jquery-1.12.3.min.js"></script>
 ```
