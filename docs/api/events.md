@@ -68,7 +68,9 @@ def 不同德测量工具，返回不同的定义
  ```
 
 
-## onPosition(lon, lat, alt)
+## onPosition(event)
+var lon = event.lon;
+var lat = event.lat;
 > 响应视点位置改变
 
 参数
@@ -79,20 +81,10 @@ def 不同德测量工具，返回不同的定义
 | lat | Number | 纬度 |
 | alt | Number | 高程（m）|
 
-## onEye(dirx, diry, dirz, fovx)
-> 响应视角改变
 
-参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| dirx | Number | 视角方向向量 |
-| diry | Number | 视角方向向量 |
-| dirz | Number | 视角方向向量 |
-| fovx | Number | 当前水平视角，单位为度|
-
-
-## onHeading(heading, fovx)
+## onEye(event)
+var heading = event.heading;
+var fovx = event.fovx;
 > 响应视角改变
 
 参数
