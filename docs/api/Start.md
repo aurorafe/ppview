@@ -18,11 +18,14 @@ PPVision是图行移动测量系统嵌入式开发控件，该控件可访问网
 ```html
 <script type="text/javascript" src="../dist/js/ppv.min.js"></script>
 <script type="text/javascript" src="../dist/js/jquery-1.12.3.min.js"></script>
+
+<div id="ppv"></div>
+
 <script>	
 //创建PPV对象
 var ppv = new PPV("ppv");
 //设置服务地址
-ppv.setServer("http://192.168.0.226:8013/PPVServer.asmx");
+ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
 //根据坐标定位当前实景
 function load(){
 	ppv.locate(3, 115.874498, 26.41398, 0);
