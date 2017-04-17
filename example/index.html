@@ -169,12 +169,12 @@
 
   // 监听地图左键事件
   Maps.map.on('mouseDownEvent', function (event) {
-    console.log(event.value)
     var coordinate = event.originEvent.coordinate;
     var feature = event.value;
     if (feature && coordinate && feature.getGeometry()) {
       var closestPoint = feature.getGeometry().getClosestPoint(coordinate);
       if (closestPoint) {
+        console.log(closestPoint)
         ppv.locate(3, closestPoint[0], closestPoint[1], 0);
       }
     }
@@ -213,7 +213,7 @@
               }
             }
           },
-          geometry: [115.874498, 26.41398],
+          geometry: [115.87258481455471, 26.380662006921387],
           geometryType: 'Point'
         };
         pointFeature = Maps.addPoint(point, {
@@ -221,8 +221,8 @@
         });
 
         var ptx, pty;
-        ptx = 115.874498;
-        pty = 26.41398;
+        ptx = 115.87258481455471;
+        pty = 26.380662006921387;
         initPano(ptx, pty)
       })
       .catch(function (error) {

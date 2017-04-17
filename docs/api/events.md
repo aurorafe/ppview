@@ -1,9 +1,9 @@
 # 事件
 
-## onInit()
+## onInit() (正在开发中。。。)
 > 响应控件初始化
 
-## onTool(cid)
+## onTool(cid) (正在开发中。。。)
 > 响应setTool
 
 参数
@@ -12,7 +12,7 @@
 | :---: | :---: | :---: |
 | cid | String |  当前工具 id，见 setTool 参数 cid 定义 |
 
-## onSampleMode(mode)
+## onSampleMode(mode) (正在开发中。。。)
 > 响应setSampleMode
 
 参数
@@ -21,7 +21,7 @@
 | :---: | :---: | :---: |
 | mode | String |  当前采样模式，见 setSampleMode 参数 mode 定义 |
 
-## onFeatureCreate(def)
+## onFeatureCreate(def) (正在开发中。。。)
 > 响应采集点、线、面工具
 
 参数
@@ -30,7 +30,7 @@
 | :---: | :---: | :---: |
 | def | GeoJson | 要素定义，GeoJson 字符串 |
 
-## onFeatureSelect(handle, fid)
+## onFeatureSelect(handle, fid) (正在开发中。。。)
 > 响应要素被控件工具选中
 
 参数
@@ -40,7 +40,7 @@
 | handle | 要素handle | 要素handle |
 | fid | String | 要素fid |
 
-## onFeatureRemove(handle, fid)
+## onFeatureRemove(handle, fid) (正在开发中。。。)
 > 响应要素被控件工具删除
 
 参数
@@ -50,7 +50,7 @@
 | handle | 要素handle | 要素handle |
 | fid | String | 要素fid |
 
-## onMeasure(def)
+## onMeasure(def) (正在开发中。。。)
 > 响应测量工具
 
 def 不同德测量工具，返回不同的定义
@@ -94,7 +94,7 @@ var fovx = event.fovx;
 | heading | Number | 当前视线方向方位角，北方向为 0，单位为度 |
 | fovx | Number | 当前水平视角，单位为度|
 
-## onFrame(long id)
+## onFrame(long id) (正在开发中。。。)
 > 响应当前照片改变
 
 参数
@@ -103,7 +103,7 @@ var fovx = event.fovx;
 | :---: | :---: | :---: |
 | id | String | 帧id |
 
-## onOut(str)
+## onOut(str) (正在开发中。。。)
 > 响应控件内部输出信息
 
 参数

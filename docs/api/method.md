@@ -4,12 +4,12 @@
 
 ## 方法
 
-### setServer(string url)
+### setServer(url)
 > 设置服务器地址，并验证服务。
 
 | 参数url | type | example |
 | :---: | :---: | :---: |
-| WebService服务地址 | String | "http://192.168.0.226:8013/PPVServer.asmx" |
+| WebService服务地址 | String | "http://211.101.37.253:8013//PPVServer.asmx" |
 
 > 返回数据
 
@@ -20,7 +20,7 @@
 | 2 | 服务验证操作失败 |
 | 3 | 服务未授权 |
 
-### setSRS(string srs) (暂不可用)
+### setSRS(srs) (正在开发中。。。)
 > 设置系统参照系。
 srs 参照系定义
 
@@ -68,7 +68,7 @@ srs 参照系定义
 | type | Number | 3 | 图像类型，目前仅支持 3、4 |
 | lon | Number | 112.56 | 经度 |
 | lat | Number | 23.56 | 纬度 |
-| alt | Number | 0 | ？？ |
+| alt | Number | 0 | 高程 |
 
 > 返回数据
 
@@ -80,7 +80,7 @@ srs 参照系定义
 | 3 | 轨迹数据无效 |
 | 4 | 需要换带，请保存并删除所有要素 |
 
-### locateByID(type, id)
+### locateByID(type, id) (正在开发中。。。)
 > 通过id定位可测量影像
 
 | 参数 | type | example | 说明 |
@@ -99,13 +99,13 @@ srs 参照系定义
 | 4 | 需要换带，请保存并删除所有要素 |
 | 5 | 未授权 |
 
-### play()
+### play() (正在开发中。。。)
 > 开始自动播放轨迹图像
 
-### stop()
+### stop() (正在开发中。。。)
 > 停止播放轨迹图像
 
-### setTool(cid)
+### setTool(cid) (正在开发中。。。)
 > 设置当前工具
 
 | 类型 | 说明 |
@@ -120,10 +120,10 @@ srs 参照系定义
 | measure_length  | 测量长度 |
 | measure_area  | 测量面积 |
 
-### getTool()
+### getTool() (正在开发中。。。)
 > 查询当前工具
 
-### setSampleMode(mode)
+### setSampleMode(mode) (正在开发中。。。)
 > 设置采样模式。摄影测量法，定位一个点需要在两个影像点击两次，标定面法只需要点
 击一次，但需要预先标定面。
 
@@ -142,17 +142,17 @@ mode 采样模式
 
 触发 onSampleMode 事件
 
-### getSampleMode()
+### getSampleMode() (正在开发中。。。)
 > 查询当前采样模式
 
-### getFrame()
+### getFrame() (正在开发中。。。)
 > 查询当前照片 id
 
 | 类型 | 说明 |
 | :---: | :---: |
 | id  | 当前照片 id |
 
-### toggleFullscreen()
+### toggleFullscreen() (正在开发中。。。)
 > 切换全屏显示
   * 快捷键
   * z：切换全屏、正常
@@ -165,34 +165,34 @@ mode 采样模式
 | 0 | 正常 |
 | 1 | 全屏 |
 
-### popHtml(url)
+### popHtml(url) (正在开发中。。。)
 
 > 弹出网页窗口，并定向到 url
 
-### eyeRotateHor[Ver](angle) (暂不可用)
+### eyeRotateHor[Ver](angle) (正在开发中。。。)
 > 水平[垂直]旋转视线
 
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
 | angle | Number | 旋转角度，单位为度，正值顺时针旋转，负值逆时针旋转 |
 
-### eyeFov(scale) (暂不可用)
+### eyeFov(scale) (正在开发中。。。)
 > 视角缩放
 
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
 | scale | Number | 缩放比例，取值应大于 0，大于 1 放大，小于 1 缩小 |
 
-### lookAt(lon, lat, alt) (暂不可用)
+### lookAt(lon, lat, alt) (正在开发中。。。)
 > 定位视线方向，通过当前视点位置与目标点坐标，确定一条射线
 
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
 | lon | Number | 经度 |
 | lat | Number | 纬度 |
-| alt | Number | ？？ |
+| alt | Number | 高程 |
 
-### addLayer(def)
+### addLayer(def) (正在开发中。。。)
 > 添加一个图层
 
 参数def 图层定义
@@ -214,7 +214,7 @@ mode 采样模式
 注意：Line、Polygon 类型的图层，不应该设置 icon
 
 
-### findLayer(name)
+### findLayer(name) (正在开发中。。。)
 > 根据图层名，查找图层
 参数
 
@@ -222,7 +222,7 @@ mode 采样模式
 | :---: | :---: | :---: |
 | name | String | 图层名 |
 
-### removeLayer(handle)
+### removeLayer(handle) (正在开发中。。。)
 > 删除图层
 
 参数
@@ -231,11 +231,11 @@ mode 采样模式
 | :---: | :---: | :---: |
 | handle | String | 图层handle |
 
-### removeAllLayers()
+### removeAllLayers() (正在开发中。。。)
 > 删除所有图层
 
 
-### addFeature(hlayer, def)
+### addFeature(hlayer, def) (正在开发中。。。)
 > 向指定图层添加点、线、面要素
 
 参数
@@ -286,7 +286,7 @@ mode 采样模式
 ```
 
 
-### findFeatureByID(fid)
+### findFeatureByID(fid) (正在开发中。。。)
 > 根据id 查找要素
 
 参数
@@ -295,7 +295,7 @@ mode 采样模式
 | :---: | :---: | :---: |
 | fid | String | 要素fid |
 
-### removeFeature(handle)
+### removeFeature(handle) (正在开发中。。。)
 > 删除要素
 
 参数
@@ -305,7 +305,7 @@ mode 采样模式
 | handle | '' |  要素handle |
 
 
-### removeAllFeatures(hlayer)
+### removeAllFeatures(hlayer) (正在开发中。。。)
 > 删除指定图层的所有要素
 
 参数
@@ -314,7 +314,7 @@ mode 采样模式
 | :---: | :---: | :---: |
 | hlayer | 图层 handle |  图层handle |
 
-### selectFeature(handle)
+### selectFeature(handle) (正在开发中。。。)
 > 选中要素，高亮显示
 
 参数
