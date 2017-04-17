@@ -14,7 +14,6 @@
   <style type="text/css">
     html, body, .container-fluid, .row {
       height: 100%;
-      overflow: hidden;
     }
     .map-content {
       height: 100%;
@@ -50,25 +49,24 @@
     <div class="col-md-6 map-content" id="map"></div>
     <div class="col-md-6 pano-content" id="ppv">
       <div class="ppv_toolbar">
-        <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标" onmousedown="ppv.setTool(Tool.measurePoint)"></img>
-        <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度" onmousedown="ppv.setTool(Tool.measureLength)"></img>
-        <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积" onmousedown="ppv.setTool(Tool.measureArea)"></img>
-        <img class="ppv_button" src="public/icon/measureheigth.png" title="测量垂距"></img>
-        <img class="ppv_button" src="public/icon/measureLimian.png" title="测量立面"></img>
-        <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"></img>
-        <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"></img>
-        <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"></img>
-        <img class="ppv_button" src="public/icon/creatLine.png" title="创建线"></img>
-        <img class="ppv_button" src="public/icon/creatArea.png" title="创建面"></img>
-        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"></img>
-        <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"></img>
+        <img class="ppv_button" src="public/icon/查询坐标.png" title="查询坐标" onmousedown="ppv.setTool(Tool.measurePoint)"></img>
+        <img class="ppv_button" src="public/icon/测量长度.png" title="测量长度" onmousedown="ppv.setTool(Tool.measureLength)"></img>
+        <img class="ppv_button" src="public/icon/测量面积.png" title="测量面积" onmousedown="ppv.setTool(Tool.measureArea)"></img>
+        <img class="ppv_button" src="public/icon/测量垂距.png" title="测量垂距"></img>
+        <img class="ppv_button" src="public/icon/测量立面.png" title="测量立面"></img>
+        <img class="ppv_button" src="public/icon/测量角度.png" title="测量角度"></img>
+        <img class="ppv_button" src="public/icon/测量坡度.png" title="测量坡度"></img>
+        <img class="ppv_button" src="public/icon/创建点.png" title="创建点"></img>
+        <img class="ppv_button" src="public/icon/创建线.png" title="创建线"></img>
+        <img class="ppv_button" src="public/icon/创建面.png" title="创建面"></img>
+        <img class="ppv_button" src="public/icon/选择对象.png" title="选择对象"></img>
+        <img class="ppv_button" src="public/icon/删除选中对象.png" title="删除选中对象"></img>
         <img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>
       </div>
     </div>
   </div>
 </div>
 <script src="./public/scripts/jquery/jquery.min.js"></script>
-<script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
 <script src="./public/scripts/axios/axios.min.js"></script>
 <script src="./public/scripts/HMap/HMap.min.js"></script>
@@ -160,13 +158,6 @@
     ]
   });
 
-  // 当页面变化刷新地图
-  $(window).resizeend({
-    delay: 50
-  }, function () {
-    Maps.updateSize();
-  });
-
   // 监听地图左键事件
   Maps.map.on('mouseDownEvent', function (event) {
     console.log(event.value)
@@ -249,7 +240,7 @@
   // 初始化实景控件
   function initPano(ptx, pty) {
     ppv = new PPV("ppv");
-    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
+    ppv.setServer("http://192.168.0.226:8013/PPVServer.asmx");
     ppv.locate(3, ptx, pty, 0);
     ppv.onPosition = onPosition;
     ppv.onEye = onEye;
