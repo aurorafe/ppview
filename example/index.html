@@ -42,6 +42,16 @@
       background-color: #2387c0;
       cursor: pointer;
     }
+    .play-button {
+      float: left;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    .play-button .play {
+
+    }
+    .play-button .stop {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -50,19 +60,23 @@
     <div class="col-md-6 map-content" id="map"></div>
     <div class="col-md-6 pano-content" id="ppv">
       <div class="ppv_toolbar">
-        <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标" onmousedown="ppv.setTool(Tool.measurePoint)"></img>
-        <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度" onmousedown="ppv.setTool(Tool.measureLength)"></img>
-        <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积" onmousedown="ppv.setTool(Tool.measureArea)"></img>
-        <img class="ppv_button" src="public/icon/measureheigth.png" title="测量垂距"></img>
-        <img class="ppv_button" src="public/icon/measureLimian.png" title="测量立面"></img>
-        <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"></img>
-        <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"></img>
+        <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标" onclick="activeTool('measurePoint')"></img>
+        <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度" onclick="activeTool('measureLength')"></img>
+        <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积" onclick="activeTool('measureArea')"></img>
+        <img class="ppv_button" src="public/icon/measureheigth.png" title="测量垂距" onclick="activeTool('measureZ')"></img>
+        <img class="ppv_button" src="public/icon/measureLimian.png" title="测量立面" onclick="activeTool('measureFacade')"></img>
+        <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度" onclick="activeTool('measureAngle')"></img>
+        <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度" onclick="activeTool('measureSlope')"></img>
         <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"></img>
         <img class="ppv_button" src="public/icon/creatLine.png" title="创建线"></img>
         <img class="ppv_button" src="public/icon/creatArea.png" title="创建面"></img>
         <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"></img>
         <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"></img>
         <img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>
+        <div class="play-button">
+          <img class="ppv_button play" onclick="play()" src="public/icon/play.png" title="播放"></img>
+          <img class="ppv_button stop" onclick="stop()" src="public/icon/stop.png" title="暂停"></img>
+        </div>
       </div>
     </div>
   </div>
@@ -253,6 +267,44 @@
     ppv.locate(3, ptx, pty, 0);
     ppv.onPosition = onPosition;
     ppv.onEye = onEye;
+  }
+  // 实景工具类
+  function activeTool (type) {
+    switch (type) {
+      case 'measurePoint':
+        ppv.setTool(Tool.measurePoint, true);
+        break;
+      case 'measureLength':
+        ppv.setTool(Tool.measureLength, true);
+        break;
+      case 'measureArea':
+        ppv.setTool(Tool.measureArea, true);
+        break;
+      case 'measureZ':
+        ppv.setTool(Tool.measureZ, true);
+        break;
+      case 'measureFacade':
+        ppv.setTool(Tool.measureFacade, true);
+        break;
+      case 'measureAngle':
+        ppv.setTool(Tool.measureAngle, true);
+        break;
+      case 'measureSlope':
+        ppv.setTool(Tool.measureSlope, true);
+        break;
+    }
+  }
+  
+  function play () {
+    ppv.play()
+    $('.play').css('display', 'none')
+    $('.stop').css('display', 'block')
+  }
+  
+  function stop () {
+    ppv.stop()
+    $('.play').css('display', 'block')
+    $('.stop').css('display', 'none')
   }
 </script>
 </body>
