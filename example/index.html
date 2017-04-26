@@ -52,12 +52,27 @@
     .play-button .stop {
       display: none;
     }
+    .my-button-add {
+      position: absolute;
+      top: 20px;
+      left: calc(50% - 48px);
+      z-index: 10;
+    }
+    .my-button-rm {
+      position: absolute;
+      top: 20px;
+      left: calc(50% + 96px + 20px);
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6 map-content" id="map"></div>
+    <div class="col-md-6 map-content" id="map">
+      <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
+      <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
+    </div>
     <div class="col-md-6 pano-content" id="ppv">
       <div class="ppv_toolbar">
         <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标" onclick="activeTool('measurePoint')"></img>
@@ -67,11 +82,11 @@
         <img class="ppv_button" src="public/icon/measureLimian.png" title="测量立面" onclick="activeTool('measureFacade')"></img>
         <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度" onclick="activeTool('measureAngle')"></img>
         <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度" onclick="activeTool('measureSlope')"></img>
-        <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"></img>
-        <img class="ppv_button" src="public/icon/creatLine.png" title="创建线"></img>
-        <img class="ppv_button" src="public/icon/creatArea.png" title="创建面"></img>
-        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"></img>
-        <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"></img>
+        <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点" onclick="activeTool('createPoint')"></img>
+        <img class="ppv_button" src="public/icon/creatLine.png" title="创建线" onclick="activeTool('createPolyline')"></img>
+        <img class="ppv_button" src="public/icon/creatArea.png" title="创建面" onclick="activeTool('createPolygon')"></img>
+        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象" onclick="activeTool('pick')"></img>
+        <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象" onclick="activeTool('remove')"></img>
         <img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>
         <div class="play-button">
           <img class="ppv_button play" onclick="play()" src="public/icon/play.png" title="播放"></img>
@@ -259,6 +274,83 @@
     console.log(heading);
     pointFeature.getStyle().getImage().setRotation(heading)
   }
+  // 响应创建要素(点)
+  var fid = 0;
+  function onFeatureCreate (event){
+    console.log(event)
+    fid++;
+    event.fid = fid;
+    event.name = "我是" + event.geometry.type + fid;
+    var icon = 'public/icon/point_' + parseInt(Math.random()*4 + 1, 10) + '.png'
+    event.icon = icon;
+    var layerPointDef = {
+      name:"路灯",
+      type:"Point",//Point, Line, Polygon 三种类型，并非强约束
+      color:0xffffff,//RGBA or RGB
+      opacity:1.0,
+      size: 20,
+      offset:[0,20],
+      fontSize: 14,
+      icon: icon
+    };
+    var layerLineDef = {
+      name:"分道线",
+      type:"Line",//Point, Line, Polygon 三种类型，并非强约束
+      color:"rgb(255,0,255)",//RGBA or RGB
+      opacity:1,
+      lineWidth:4,
+      fontSize:15
+    };
+    var layerPolyDef = {
+      name:"箭头",
+      type:"Polygon",//Point, Line, Polygon 三种类型，并非强约束
+      color:'skyblue',//RGBA or RGB
+      opacity:0.5,
+      lineWidth:4,
+      fontSize:15
+    };
+    var layerPoint = ppv.addLayer(layerPointDef);
+    var layerLine = ppv.addLayer(layerLineDef);
+    var layerPoly = ppv.addLayer(layerPolyDef);
+    var type = event.geometry.type;
+    if (type == "Point") {
+      ppv.addFeature(layerPoint, event);
+    } else if (type == "LineString") {
+      ppv.addFeature(layerLine, event);
+    } else if (type == "Polygon") {
+      ppv.addFeature(layerPoly, event);
+    }
+    creatFeatureOnMapView(event)
+  }
+
+  function creatFeatureOnMapView (event) {
+    var _point = {
+      attributes: {
+        ID: event['fid'],
+        style: { // 自定义相关样式
+          icon: {
+            imageSrc: event['icon']
+          }
+        },
+        M: event['geometry']['coordinates'][3]
+      },
+      geometry: [event['geometry']['coordinates'][0], event['geometry']['coordinates'][1]],
+      geometryType: 'Point'
+    }
+    Maps.addPoint(_point, {
+      layerName: 'point'
+    });
+  }
+  // 响应要素被选择
+  function onFeatureSelect (event){
+    var fid = event.fid;
+    console.log(fid)
+  }
+  // 响应要素被移除
+  function onFeatureRemove (event){
+    var fid = event.fid;
+    console.log(fid)
+  }
 
   // 初始化实景控件
   function initPano(ptx, pty) {
@@ -267,6 +359,9 @@
     ppv.locate(3, ptx, pty, 0);
     ppv.onPosition = onPosition;
     ppv.onEye = onEye;
+    ppv.onFeatureCreate = onFeatureCreate;
+    ppv.onFeatureSelect = onFeatureSelect;
+    ppv.onFeatureRemove = onFeatureRemove;
   }
   // 实景工具类
   function activeTool (type) {
@@ -292,19 +387,82 @@
       case 'measureSlope':
         ppv.setTool(Tool.measureSlope, true);
         break;
+      case 'createPoint':
+        ppv.setTool(Tool.createPoint, true);
+        break;
+      case 'createPolyline':
+        ppv.setTool(Tool.createPolyline, true);
+        break;
+      case 'createPolygon':
+        ppv.setTool(Tool.createPolygon, true);
+        break;
+      case 'pick':
+        ppv.setTool(Tool.pick, true);
+        break;
+      case 'remove':
+        ppv.setTool(Tool.remove, true);
+        break;
     }
   }
-  
+  // 播放
   function play () {
     ppv.play()
     $('.play').css('display', 'none')
     $('.stop').css('display', 'block')
   }
-  
+  // 暂停
   function stop () {
     ppv.stop()
     $('.play').css('display', 'block')
     $('.stop').css('display', 'none')
+  }
+  // 外部叠加点要素
+  function addPointLayer () {
+    axios.get('./public/json/live-list.json')
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/point_' + parseInt(Math.random()*4 + 1, 10) + '.png'
+        var _layerPointDef = {
+          name:"桥梁",
+          type:"Point",//Point, Line, Polygon 三种类型，并非强约束
+          color:0xffffff,//RGBA or RGB
+          opacity:1.0,
+          size: 20,
+          offset:[0,20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/point_1.png'
+            }
+          }
+          var __item = {
+            fid: item['attributes']['QLDM'],
+            geometry: {
+              coordinates: [item['geometry'][0], item['geometry'][1], 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['QLMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+          Maps.addPoint(item, {
+            layerName: 'pointFeat'
+          });
+          ppv.addFeature(_layerPoint, __item);
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  // 移除叠加要素
+  function removePointLayer () {
+    Maps.removeFeatureByLayerName('pointFeat')
   }
 </script>
 </body>
