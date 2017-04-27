@@ -99,10 +99,10 @@
 <script src="./public/scripts/jquery/jquery.min.js"></script>
 <script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
-<script src="./public/scripts/axios/axios.min.js"></script>
 <script src="./public/scripts/HMap/HMap.min.js"></script>
 <script src="./public/scripts/PPV/js/ppv.min.js"></script>
 <script src="./mapConfig.js"></script>
+<script src="dataFile.js"></script>
 <script type="text/javascript">
   var resolutions = [], ppv, pointFeature;
   for (var i = 0; i < cor.length; i++) {
@@ -213,50 +213,44 @@
 
   // 添加实景所在路线
   function addLine () {
-    axios.get('./public/json/line.json')
-      .then(function (response) {
-        var line = response['data']['data']['features'][0];
-        line['attributes']['style'] = {
-          stroke: {
-            strokeWidth: 4,
-            strokeColor: '#0000EE'
+    var line = lineData['data']['features'][0];
+    line['attributes']['style'] = {
+      stroke: {
+        strokeWidth: 4,
+        strokeColor: '#0000EE'
+      }
+    }
+    line['attributes']['selectStyle'] = {
+      stroke: {
+        strokeWidth: 6,
+        strokeColor: '#E52929'
+      }
+    }
+    var feat = Maps.addPolyline(line, {
+      layerName: 'line',
+      zoomToExtent: true
+    });
+
+    var point = {
+      attributes: {
+        ID: '02',
+        style: { // 自定义相关样式
+          icon: {
+            imageSrc: './public/icon/jiaodu.png'
           }
         }
-        line['attributes']['selectStyle'] = {
-          stroke: {
-            strokeWidth: 6,
-            strokeColor: '#E52929'
-          }
-        }
-        var feat = Maps.addPolyline(line, {
-          layerName: 'line',
-          zoomToExtent: true
-        });
+      },
+      geometry: [115.87258481455471, 26.380662006921387],
+      geometryType: 'Point'
+    };
+    pointFeature = Maps.addPoint(point, {
+      layerName: 'point'
+    });
 
-        var point = {
-          attributes: {
-            ID: '02',
-            style: { // 自定义相关样式
-              icon: {
-                imageSrc: './public/icon/jiaodu.png'
-              }
-            }
-          },
-          geometry: [115.87258481455471, 26.380662006921387],
-          geometryType: 'Point'
-        };
-        pointFeature = Maps.addPoint(point, {
-          layerName: 'point'
-        });
-
-        var ptx, pty;
-        ptx = 115.87258481455471;
-        pty = 26.380662006921387;
-        initPano(ptx, pty)
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    var ptx, pty;
+    ptx = 115.87258481455471;
+    pty = 26.380662006921387;
+    initPano(ptx, pty)
   }
 
   // 响应位置变化事件
@@ -418,51 +412,46 @@
   }
   // 外部叠加点要素
   function addPointLayer () {
-    axios.get('./public/json/live-list.json')
-      .then(function (response) {
-        var pointFeat = response['data']['data']['features']
-        var icon = 'public/icon/point_' + parseInt(Math.random()*4 + 1, 10) + '.png'
-        var _layerPointDef = {
-          name:"桥梁",
-          type:"Point",//Point, Line, Polygon 三种类型，并非强约束
-          color:0xffffff,//RGBA or RGB
-          opacity:1.0,
-          size: 20,
-          offset:[0,20],
-          fontSize: 14,
-          icon: icon
-        };
-        var _layerPoint = ppv.addLayer(_layerPointDef);
-        pointFeat.forEach(function (item) {
-          item['attributes'].style = { // 自定义相关样式
-            icon: {
-              imageSrc: 'public/icon/point_1.png'
-            }
-          }
-          var __item = {
-            fid: item['attributes']['QLDM'],
-            geometry: {
-              coordinates: [item['geometry'][0], item['geometry'][1], 200.5938781674623],
-              type: "Point"
-            },
-            icon: icon,
-            name: item['attributes']['QLMC'],
-            toGround: 0,
-            type: "Feature"
-          }
-          Maps.addPoint(item, {
-            layerName: 'pointFeat'
-          });
-          ppv.addFeature(_layerPoint, __item);
-        })
-      })
-      .catch(function (error) {
-        console.log(error);
+    var pointFeat = liveList['data']['features']
+    var icon = 'public/icon/point_' + parseInt(Math.random()*4 + 1, 10) + '.png'
+    var _layerPointDef = {
+      name:"桥梁",
+      type:"Point",//Point, Line, Polygon 三种类型，并非强约束
+      color:0xffffff,//RGBA or RGB
+      opacity:1.0,
+      size: 20,
+      offset:[0,20],
+      fontSize: 14,
+      icon: icon
+    };
+    var _layerPoint = ppv.addLayer(_layerPointDef);
+    pointFeat.forEach(function (item) {
+      item['attributes'].style = { // 自定义相关样式
+        icon: {
+          imageSrc: 'public/icon/point_1.png'
+        }
+      }
+      var __item = {
+        fid: item['attributes']['QLDM'],
+        geometry: {
+          coordinates: [item['geometry'][0], item['geometry'][1], 200.5938781674623],
+          type: "Point"
+        },
+        icon: icon,
+        name: item['attributes']['QLMC'],
+        toGround: 0,
+        type: "Feature"
+      }
+      Maps.addPoint(item, {
+        layerName: 'pointFeat'
       });
+      ppv.addFeature(_layerPoint, __item);
+    })
   }
   // 移除叠加要素
   function removePointLayer () {
     Maps.removeFeatureByLayerName('pointFeat')
+    ppv.removeAllLayers();
   }
 </script>
 </body>
