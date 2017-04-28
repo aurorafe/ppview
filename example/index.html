@@ -6,64 +6,15 @@
   <title>实景示例</title>
   <link rel="stylesheet" href="./public/scripts/HMap/HMap.css" type="text/css">
   <link rel="stylesheet" href="./public/scripts/Bootstrap/css/bootstrap.min.css"></link>
-  <style type="text/css">
-    html, body, .container-fluid, .row {
-      height: 100%;
-      overflow: hidden;
-    }
-    .map-content {
-      height: 100%;
-      border: 1px solid #2d2d2d;
-      box-sizing: border-box;
-      padding: 0px;
-    }
-    .pano-content {
-      height: 100%;
-      border: 1px solid #2d2d2d;
-      box-sizing: border-box;
-      padding: 0px;
-    }
-    .ppv_toolbar {
-      height: 30px;
-      line-height: 30px;
-      position: absolute;
-      top: 0px;
-    }
-    .ppv_toolbar img {
-      width: 50px;
-      height: 50px;
-    }
-    .ppv_toolbar img:hover {
-      background-color: #2387c0;
-      cursor: pointer;
-    }
-    .play-button {
-      float: left;
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-    .play-button .play {
-
-    }
-    .play-button .stop {
-      display: none;
-    }
-    .my-button-add {
-      position: absolute;
-      top: 20px;
-      left: calc(50% - 48px);
-      z-index: 10;
-    }
-    .my-button-rm {
-      position: absolute;
-      top: 20px;
-      left: calc(50% + 96px + 20px);
-      z-index: 10;
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 <body>
 <div class="container-fluid">
   <div class="row">
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>提示：</strong><span>本次新增测距，测面，测坡度，测角度，要素选择，选中之后弹框，兼容ie浏览器，快捷键操作（p：播放暂停，翻页键：快进/快退，F9: 全屏，F10：退出全屏，方向键前进后退）</span>
+    </div>
     <div class="col-md-6 map-content" id="map">
       <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
       <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
@@ -89,6 +40,22 @@
         </div>
       </div>
     </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel"></h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary">确定</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal -->
+    </div>
   </div>
 </div>
 <!--<script src="./public/scripts/HMap/polyfill.js"></script>-->
@@ -99,6 +66,7 @@
 <script src="./public/scripts/PPV/js/ppv.min.js"></script>
 <script src="./mapConfig.js"></script>
 <script src="dataFile.js"></script>
+<script src="./public/scripts/popup/popup.js"></script>
 <script type="text/javascript">
   var resolutions = [], ppv, pointFeature;
   for (var i = 0; i < cor.length; i++) {
@@ -342,6 +310,13 @@
     console.log(fid)
   }
 
+  // 要素选中时显示信息
+  function onFeatureSelect (event) {
+    $('#myModalLabel').html('<span>' + event.layername + '</span>')
+    $('.modal-body').html('<span>' + event.fid + '</span>')
+    $('#myModal').modal('show')
+  }
+
   // 初始化实景控件
   function initPano(ptx, pty) {
     ppv = new PPV("ppv");
@@ -352,6 +327,7 @@
     ppv.onFeatureCreate = onFeatureCreate;
     ppv.onFeatureSelect = onFeatureSelect;
     ppv.onFeatureRemove = onFeatureRemove;
+    ppv.onFeatureSelect = onFeatureSelect;
   }
   // 实景工具类
   function activeTool (type) {
