@@ -298,11 +298,7 @@
       layerName: 'point'
     });
   }
-  // 响应要素被选择
-  function onFeatureSelect (event){
-    var fid = event.fid;
-    console.log(fid)
-  }
+
   // 响应要素被移除
   function onFeatureRemove (event){
     var fid = event.fid;
@@ -310,6 +306,7 @@
   }
 
   // 要素选中时显示信息
+  // 响应要素被选择
   function onFeatureSelect (event) {
     $('#myModalLabel').html('<span>' + event.layername + '</span>')
     $('.modal-body').html('<span>' + event.fid + '</span>')
@@ -324,7 +321,6 @@
     ppv.onPosition = onPosition;
     ppv.onEye = onEye;
     ppv.onFeatureCreate = onFeatureCreate;
-    ppv.onFeatureSelect = onFeatureSelect;
     ppv.onFeatureRemove = onFeatureRemove;
     ppv.onFeatureSelect = onFeatureSelect;
   }
@@ -413,6 +409,7 @@
         toGround: 0,
         type: "Feature"
       }
+      debugger
       Maps.addPoint(item, {
         layerName: 'pointFeat'
       });
