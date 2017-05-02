@@ -58,7 +58,6 @@
     </div>
   </div>
 </div>
-<!--<script src="./public/scripts/HMap/polyfill.js"></script>-->
 <script src="./public/scripts/jquery/jquery.min.js"></script>
 <script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
@@ -176,7 +175,7 @@
 
   // 添加实景所在路线
   function addLine () {
-    var line = lineData['data']['features'][0];
+    var line = lineData['data']['features'][1];
     line['attributes']['style'] = {
       stroke: {
         strokeWidth: 4,

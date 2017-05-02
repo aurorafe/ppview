@@ -1,0 +1,14 @@
+
+
+.ppv_toolbar{
+	position: absolute;
+	margin:10;
+	background-color: rgba(0,0,0,0.5);
+}
+.ppv_button{
+	height:32;
+	background-color: transparent;
+}
+.ppv_button:hover{
+	background-color: lightgray;
+}
