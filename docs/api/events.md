@@ -1,8 +1,8 @@
 # 事件
 
 ## onPosition(event)
-var lon = event.lon;
-var lat = event.lat;
+var lon = event.lon;  
+var lat = event.lat;  
 > 响应视点位置改变
 
 参数
@@ -15,8 +15,8 @@ var lat = event.lat;
 
 
 ## onEye(event)
-var heading = event.heading;
-var fovx = event.fovx;
+var heading = event.heading;  
+var fovx = event.fovx;  
 > 响应视角改变
 
 参数
@@ -52,14 +52,14 @@ fid:123 //要素 id
 ## onFeatureRemove(event) 
 > 响应要素被控件工具删除
 
-参数
-
-event={ 
-layer:hlayer, //图层 handle
-feature:handle, //要素 handle
-layername:"lay_name", //图层名称
-fid:123 //要素 id
-}
+参数 
+ 
+event={   
+layer:hlayer, //图层 handle  
+feature:handle, //要素 handle  
+layername:"lay_name", //图层名称  
+fid:123 //要素 id  
+}  
 
 
 ## onMeasure(def) 
@@ -78,10 +78,10 @@ def 不同德测量工具，返回不同的定义
  ```json
  {"length":10.459530,"dz":10.232580,"dxy":2.167046}
  ```
-##．onLocate
->响应 locate 和 locateByID，可判断是否成功
-参数 
-event={ 
-state:LocateState.success
-} 
-varLocateState= { success:0, typeError:1, dataError:2, imageError:3 };
+## onLocate
+> 响应 locate 和 locateByID，可判断是否成功  
+参数  
+event={   
+state:LocateState.success  
+}   
+varLocateState= { success:0, typeError:1, dataError:2, imageError:3 };  
