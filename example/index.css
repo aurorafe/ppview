@@ -41,13 +41,19 @@ html, body, .container-fluid, .row {
 .my-button-add {
   position: absolute;
   top: 20px;
+  left: calc(50% - 143px - 20px);
+  z-index: 10;
+}
+.my-button-addMuch {
+  position: absolute;
+  top: 20px;
   left: calc(50% - 48px);
   z-index: 10;
 }
 .my-button-rm {
   position: absolute;
   top: 20px;
-  left: calc(50% + 96px + 20px);
+  left: calc(50% + 76px);
   z-index: 10;
 }
 .popup_back {

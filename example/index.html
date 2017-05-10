@@ -19,6 +19,7 @@
     </div>
     <div class="col-md-6 map-content" id="map">
       <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
+      <button type="button" class="btn btn-success my-button-addMuch" onclick="addMuchPoints()">叠加大量点</button>
       <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
     </div>
     <div class="col-md-6 pano-content" id="ppv">
@@ -74,6 +75,7 @@
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
 <script src="./public/scripts/HMap/HMap.js"></script>
 <script src="./public/scripts/PPV/js/ppv.min.js"></script>
+<script src="./public/scripts/axios/axios.min.js"></script>
 <script src="./mapConfig.js"></script>
 <script src="dataFile.js"></script>
 <script type="text/javascript">
@@ -331,7 +333,7 @@
   function initPano(ptx, pty) {
     ppv = new PPV("ppv");
     // 设置服务地址
-    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
+    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
     // 根据坐标定位实景位置
     ppv.locate(3, ptx, pty, 0);
     // 响应位置变化事件
@@ -445,6 +447,60 @@
   function removePointLayer() {
     Maps.removeFeatureByLayerNames(['pointFeat', 'point'])
     ppv.removeAllLayers();
+  }
+  // 叠加大量点
+  function addMuchPoints () {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_QIAO',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/point_' + parseInt(Math.random() * 4 + 1, 10) + '.png'
+        var _layerPointDef = {
+          name: "桥梁",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/point_1.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['QLDM'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['QLMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+          Maps.addPoint(item, {
+            layerName: 'pointFeat'
+          });
+          ppv.addFeature(_layerPoint, __item);
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 </script>
 </body>
