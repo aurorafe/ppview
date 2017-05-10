@@ -38,24 +38,36 @@ html, body, .container-fluid, .row {
 .play-button .stop {
   display: none;
 }
-.my-button-add {
+.user-tool {
   position: absolute;
   top: 20px;
-  left: calc(50% - 143px - 20px);
+  left: 50px;
   z-index: 10;
 }
-.my-button-addMuch {
-  position: absolute;
-  top: 20px;
-  left: calc(50% - 48px);
-  z-index: 10;
-}
-.my-button-rm {
-  position: absolute;
-  top: 20px;
-  left: calc(50% + 76px);
-  z-index: 10;
-}
+/*.my-button-add {*/
+  /*position: absolute;*/
+  /*top: 20px;*/
+  /*left: calc(50% - 143px - 20px);*/
+  /*z-index: 10;*/
+/*}*/
+/*.my-button-addMuch-230 {*/
+  /*position: absolute;*/
+  /*top: 20px;*/
+  /*left: calc(50% - 48px);*/
+  /*z-index: 10;*/
+/*}*/
+/*.my-button-addMuch-1000 {*/
+  /*position: absolute;*/
+  /*top: 20px;*/
+  /*left: calc(50% - 48px);*/
+  /*z-index: 10;*/
+/*}*/
+/*.my-button-rm {*/
+  /*position: absolute;*/
+  /*top: 20px;*/
+  /*left: calc(50% + 76px);*/
+  /*z-index: 10;*/
+/*}*/
 .popup_back {
   height: 100%;
   left: 0;

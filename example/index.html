@@ -18,9 +18,12 @@
       增加一个系统参数ppv.scope，缺省等于100米，表示视点附近100米范围内的物体才显示； 解决拾取对象高亮bug；新增：支持缩略图</span>
     </div>
     <div class="col-md-6 map-content" id="map">
-      <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
-      <button type="button" class="btn btn-success my-button-addMuch" onclick="addMuchPoints()">叠加大量点</button>
-      <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
+      <div class="user-tool">
+        <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
+        <button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>
+        <button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>
+        <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
+      </div>
     </div>
     <div class="col-md-6 pano-content" id="ppv">
       <div class="ppv_toolbar">
@@ -233,6 +236,7 @@
     var lon = event.lon;
     var lat = event.lat;
     var xx = 0;
+    ppv.needsUpdate = true
     Maps.setPointGeometry(pointFeature, [lon, lat])
   }
 
@@ -497,6 +501,52 @@
           });
           ppv.addFeature(_layerPoint, __item);
         })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  // 叠加一千条数据
+  function testMuchPoints () {
+    axios.get('./public/json/GIS_QL.json').then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/point_' + parseInt(Math.random() * 4 + 1, 10) + '.png'
+        var _layerPointDef = {
+          name: "桥梁",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/point_1.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['QLDM'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['QLMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+//          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'pointFeat'
+        });
       })
       .catch(function (error) {
         console.log(error);
