@@ -19,9 +19,13 @@
     </div>
     <div class="col-md-6 map-content" id="map">
       <div class="user-tool">
-        <button type="button" class="btn btn-success my-button-add" onclick="addPointLayer()">叠加点图层</button>
-        <button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>
-        <button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addQLLayer()">叠加桥梁图层</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addSDLayer()">叠加隧道图层</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addQBLayer()">叠加情报板图层</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addJKLayer()">叠加监控设备图层</button>
+        <!--<button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>-->
+        <!--<button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>-->
         <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
       </div>
     </div>
@@ -33,18 +37,12 @@
              onclick="activeTool(event, 'measureLength')"></img>
         <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
              onclick="activeTool(event, 'measureArea')"></img>
-        <!--<img class="ppv_button" src="public/icon/measureheigth.png" title="测量垂距" onclick="activeTool(event, 'measureZ')"></img>-->
-        <!--<img class="ppv_button" src="public/icon/measureLimian.png" title="测量立面" onclick="activeTool(event, 'measureFacade')"></img>-->
         <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
              onclick="activeTool(event, 'measureAngle')"></img>
         <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
              onclick="activeTool(event, 'measureSlope')"></img>
         <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
              onclick="activeTool(event, 'createPoint')"></img>
-        <img class="ppv_button" src="public/icon/creatLine.png" title="创建线"
-             onclick="activeTool(event, 'createPolyline')"></img>
-        <img class="ppv_button" src="public/icon/creatArea.png" title="创建面"
-             onclick="activeTool(event, 'createPolygon')"></img>
         <img class="ppv_button" src="public/icon/selObject.png" title="选择对象" onclick="activeTool(event, 'pick')"></img>
         <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
              onclick="activeTool(event, 'remove')"></img>
@@ -449,7 +447,7 @@
   }
   // 移除叠加要素
   function removePointLayer() {
-    Maps.removeFeatureByLayerNames(['pointFeat', 'point'])
+    Maps.removeFeatureByLayerNames(['pointFeat', 'point', 'GIS_QL', 'GIS_SD', 'GIS_QBB', 'GIS_QXZ', 'GIS_JKSB'])
     ppv.removeAllLayers();
   }
   // 叠加大量点
@@ -546,6 +544,292 @@
         })
         Maps.addPoints(pointFeat, {
           layerName: 'pointFeat'
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加桥梁数据
+  function addQLLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_QIAO',
+          filter: 'SXXFX=1',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_ql.png'
+        var _layerPointDef = {
+          name: "桥梁",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_ql.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['QLDM'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['QLMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_QL',
+          zoomToExtent: true
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加隧道数据
+  function addSDLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_SUID',
+          filter: 'SXXFX=1',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_sd.png'
+        var _layerPointDef = {
+          name: "隧道",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_sd.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['SDDM'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['SDMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_SD',
+          zoomToExtent: true
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加情报板数据
+  function addQBLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_JDSS_QBB',
+          filter: 'SXXFX=1',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_qbb.png'
+        var _layerPointDef = {
+          name: "情报板",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_qbb.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['EQUIPMENT_CODE'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['EQUIPMENT_NAME'],
+            toGround: 0,
+            type: "Feature"
+          }
+
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_QBB',
+          zoomToExtent: true
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加气象站数据
+  function addQXLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_JDSS_QXZ',
+          filter: 'SXXFX=1',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_qxjcz.png'
+        var _layerPointDef = {
+          name: "气象站",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_qxjcz.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['EQUIPMENT_CODE'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['EQUIPMENT_NAME'],
+            toGround: 0,
+            type: "Feature"
+          }
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_QXZ',
+          zoomToExtent: true
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加监控设备数据
+  function addJKLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_JDSS_JKSS',
+          filter: 'SXXFX=1',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_spjkd.png'
+        var _layerPointDef = {
+          name: "监控设备",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_spjkd.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['EQUIPMENT_CODE'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['EQUIPMENT_NAME'],
+            toGround: 0,
+            type: "Feature"
+          }
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_JKSB',
+          zoomToExtent: true
         });
       })
       .catch(function (error) {

@@ -42,6 +42,9 @@ html, body, .container-fluid, .row {
   position: absolute;
   top: 20px;
   left: 50px;
+  width: calc(100% - 100px);
+  text-align: center;
+  line-height: 50px;
   z-index: 10;
 }
 /*.my-button-add {*/

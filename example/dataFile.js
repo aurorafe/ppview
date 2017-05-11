@@ -817,3 +817,21 @@ var liveList = {
   },
   "success": true
 };
+
+// var liveList = {
+//   GIS_QL: {
+//
+//   },
+//   GIS_SD: {
+//
+//   },
+//   GIS_QBB: {
+//
+//   },
+//   GIS_QXZ: {
+//
+//   },
+//   GIS_JKSB: {
+//
+//   }
+// }
