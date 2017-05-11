@@ -15,7 +15,8 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <strong>提示：</strong><span>本次主要修复CPU和内存占用问题，解决异常崩溃问题。播放时，禁用滚轮操作，内部维护要素坐标系更新，
-      增加一个系统参数ppv.scope，缺省等于100米，表示视点附近100米范围内的物体才显示； 解决拾取对象高亮bug；新增：支持缩略图</span>
+      增加一个系统参数ppv.scope，缺省等于100米，表示视点附近100米范围内的物体才显示； 解决拾取对象高亮bug；新增：支持缩略图; 增加了一个系统变量ppv.needsUpdate:
+    值为true时强制更新要素，避免出现在坐标位置找不到相关叠加要素的问题。</span>
     </div>
     <div class="col-md-6 map-content" id="map">
       <div class="user-tool">
@@ -236,6 +237,7 @@
     var xx = 0;
     ppv.needsUpdate = true
     Maps.setPointGeometry(pointFeature, [lon, lat])
+    Maps.movePointToView([lon, lat])
   }
 
   // 响应角度变化事件
@@ -447,7 +449,9 @@
   }
   // 移除叠加要素
   function removePointLayer() {
+    // 通过layerNames移除地图上要素
     Maps.removeFeatureByLayerNames(['pointFeat', 'point', 'GIS_QL', 'GIS_SD', 'GIS_QBB', 'GIS_QXZ', 'GIS_JKSB'])
+    // 移除实景叠加要素
     ppv.removeAllLayers();
   }
   // 叠加大量点
