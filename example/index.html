@@ -25,6 +25,7 @@
         <button type="button" class="btn btn-success my-button-add" onclick="addQBLayer()">叠加情报板图层</button>
         <button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>
         <button type="button" class="btn btn-success my-button-add" onclick="addJKLayer()">叠加监控设备图层</button>
+        <button type="button" class="btn btn-success my-button-add" onclick="addJDSSLayer()">叠加机电设施图层</button>
         <!--<button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>-->
         <!--<button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>-->
         <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
@@ -450,7 +451,7 @@
   // 移除叠加要素
   function removePointLayer() {
     // 通过layerNames移除地图上要素
-    Maps.removeFeatureByLayerNames(['pointFeat', 'point', 'GIS_QL', 'GIS_SD', 'GIS_QBB', 'GIS_QXZ', 'GIS_JKSB'])
+    Maps.removeFeatureByLayerNames(['pointFeat', 'point', 'GIS_QL', 'GIS_SD', 'GIS_QBB', 'GIS_QXZ', 'GIS_JKSB', 'GIS_JDSS'])
     // 移除实景叠加要素
     ppv.removeAllLayers();
   }
@@ -833,6 +834,62 @@
         })
         Maps.addPoints(pointFeat, {
           layerName: 'GIS_JKSB',
+          zoomToExtent: true
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // 叠加机电设施数据
+  function addJDSSLayer() {
+    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+      params: {
+        params: JSON.stringify({
+          layerName: 'GL_JDSS_SDSS',
+          isReturnGeometry: true
+        })
+      }
+    })
+      .then(function (response) {
+        var pointFeat = response['data']['data']['features']
+        var icon = 'public/icon/marker/icon_map_ddzx.png'
+        var _layerPointDef = {
+          name: "机电设施",
+          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+          color: 0xffffff,//RGBA or RGB
+          opacity: 1.0,
+          size: 20,
+          offset: [0, 20],
+          fontSize: 14,
+          icon: icon
+        };
+        var _layerPoint = ppv.addLayer(_layerPointDef);
+        pointFeat.forEach(function (item) {
+          item['attributes'].style = { // 自定义相关样式
+            icon: {
+              imageSrc: 'public/icon/marker/icon_map_ddzx.png'
+            }
+          }
+          var geo = item.geometry.split(' ')
+          var geoX = geo[1].slice(1, geo[1].length)
+          var geoY = geo[2].slice(0, geo[2].length - 1)
+          var __item = {
+            fid: item['attributes']['SDBH'],
+            geometry: {
+              coordinates: [geoX, geoY, 200.5938781674623],
+              type: "Point"
+            },
+            icon: icon,
+            name: item['attributes']['SDMC'],
+            toGround: 0,
+            type: "Feature"
+          }
+          ppv.addFeature(_layerPoint, __item);
+        })
+        Maps.addPoints(pointFeat, {
+          layerName: 'GIS_JDSS',
           zoomToExtent: true
         });
       })
