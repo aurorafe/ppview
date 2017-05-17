@@ -27,7 +27,7 @@
 触发 onLocate 
 详见事件描述
 
-### locateByID(type, id) 
+### locateByID(type, id)
 > 通过id定位可测量影像（异步方式打开全景或可测量影像，会触发 onLocate 事件 ）
 
 | 参数 | type | example | 说明 |
@@ -36,7 +36,7 @@
 | id | String | '1111' | 每张影像对应的唯一标识 |
 
 > 事件
-触发 onLocate事件  
+触发 onLocate事件
 
 ### play() 
 > 开始自动播放轨迹图像
@@ -52,7 +52,7 @@
 参数 
 cid 
 工具定义 
-varTool= { 
+var Tool= {
     none:0, 
     measurePoint:1, 
     measureLength:2,
@@ -66,9 +66,10 @@ varTool= {
     createPolygon:13, 
     pick:21, 
     remove:22
-    };
-boolmousedown 是否触发了 mousedown
-事件  
+ };
+bool mousedown 是否触发了 mousedown事件
+
+事件
 触发 onTool事件  
 
 

@@ -42,10 +42,10 @@ var fovx = event.fovx;
 参数
 
 event={ 
-layer:hlayer, //图层 handle
-feature:handle, //要素 handle
-layername:"lay_name", //图层名称
-fid:123 //要素 id
+    layer:hlayer, //图层 handle
+    feature:handle, //要素 handle
+    layername:"lay_name", //图层名称
+    fid:123 //要素 id
 }
 
 
@@ -55,10 +55,10 @@ fid:123 //要素 id
 参数 
  
 event={   
-layer:hlayer, //图层 handle  
-feature:handle, //要素 handle  
-layername:"lay_name", //图层名称  
-fid:123 //要素 id  
+    layer:hlayer, //图层 handle
+    feature:handle, //要素 handle
+    layername:"lay_name", //图层名称
+    fid:123 //要素 id
 }  
 
 
