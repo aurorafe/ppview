@@ -66,7 +66,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.84346265, 26.3311238],
+        "geometry": "POINT (115.84346265 26.3311238)",
         "geometryType": "Point"
       },
       {
@@ -133,7 +133,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.83771144, 26.3274448],
+        "geometry": "POINT (115.83771144 26.3274448)",
         "geometryType": "Point"
       },
       {
@@ -200,7 +200,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.82819714, 26.31737063],
+        "geometry": "POINT (115.82819714 26.31737063)",
         "geometryType": "Point"
       },
       {
@@ -267,7 +267,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.82476613, 26.31051848],
+        "geometry": "POINT (115.82476613 26.31051848)",
         "geometryType": "Point"
       },
       {
@@ -334,7 +334,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.81485162, 26.29390041],
+        "geometry": "POINT (115.81485162 26.29390041)",
         "geometryType": "Point"
       },
       {
@@ -401,7 +401,7 @@
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.79404486, 26.27922789],
+        "geometry": "POINT (115.79404486 26.27922789)",
         "geometryType": "Point"
       }
     ],

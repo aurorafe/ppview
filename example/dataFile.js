@@ -68,7 +68,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.54225923, 26.06633778],
+        "geometry": "POINT (115.54225923, 26.06633778)",
         "geometryType": "Point"
       },
       {
@@ -135,7 +135,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.5292768, 26.05574306],
+        "geometry": "POINT (115.5292768, 26.05574306)",
         "geometryType": "Point"
       },
       {
@@ -202,7 +202,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.52936264, 26.055615],
+        "geometry": "POINT (115.52936264, 26.055615)",
         "geometryType": "Point"
       },
       {
@@ -269,7 +269,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.52478711, 26.04471803],
+        "geometry": "POINT (115.52478711, 26.04471803)",
         "geometryType": "Point"
       },
       {
@@ -336,7 +336,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.52449317, 26.04391516],
+        "geometry": "POINT (115.52449317, 26.04391516)",
         "geometryType": "Point"
       },
       {
@@ -403,7 +403,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.51328944, 26.03288647],
+        "geometry": "POINT (115.51328944, 26.03288647)",
         "geometryType": "Point"
       },
       {
@@ -470,7 +470,7 @@ var liveList = {
           "BEIZ": " ",
           "XZQHMC": "于都县"
         },
-        "geometry": [115.51336031, 26.03277425],
+        "geometry": "POINT (115.51336031 26.03277425)",
         "geometryType": "Point"
       }
     ],

@@ -246,7 +246,11 @@
     var heading = event.heading;
     var fovx = event.fovx;
     console.log(heading);
-    pointFeature.getStyle().getImage().setRotation(-heading / Math.PI)
+    var style = pointFeature.getStyle()
+    var cloneStyle = style.clone()
+    cloneStyle.getImage().setRotation(heading / 180 * Math.PI)
+    pointFeature.setStyle(cloneStyle);
+    Maps.map.render()
   }
   // 响应创建要素(点)-- 点击工具创建的要素
   var fid = 0;
@@ -566,8 +570,7 @@
           isReturnGeometry: true
         })
       }
-    })
-      .then(function (response) {
+    }).then(function (response) {
         var pointFeat = response['data']['data']['features']
         var icon = 'public/icon/marker/icon_map_ql.png'
         var _layerPointDef = {
