@@ -864,7 +864,8 @@
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
-          layerName: 'GL_JDSS_SDSS',
+          layerName: 'GL_LD_JDSS',
+          filter: 'ID IS NOT NULL',
           isReturnGeometry: true
         })
       }
@@ -893,13 +894,13 @@
           var geoX = geo[1].slice(1, geo[1].length)
           var geoY = geo[2].slice(0, geo[2].length - 1)
           var __item = {
-            fid: item['attributes']['SDBH'],
+            fid: item['attributes']['ID'],
             geometry: {
               coordinates: [geoX, geoY, 200.5938781674623],
               type: "Point"
             },
             icon: icon,
-            name: item['attributes']['SDMC'],
+            name: item['attributes']['EQUIPMENT_NAME'],
             toGround: 0,
             type: "Feature"
           }
