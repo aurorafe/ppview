@@ -14,9 +14,10 @@
     <div class="alert alert-success alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
-      <strong>提示：</strong><span>本次主要修复CPU和内存占用问题，解决异常崩溃问题。播放时，禁用滚轮操作，内部维护要素坐标系更新，
-      增加一个系统参数ppv.scope，缺省等于100米，表示视点附近100米范围内的物体才显示； 解决拾取对象高亮bug；新增：支持缩略图; 增加了一个系统变量ppv.needsUpdate:
-    值为true时强制更新要素，避免出现在坐标位置找不到相关叠加要素的问题。</span>
+      <strong>提示：</strong><span>解决放大镜bug，解决翻页键、方向键bug，优化逻辑，新增测量高度工具，新增测量结果事件，
+      增加setStyle接口，用来设置背景色，增加showControl接口，可以隐藏导向箭头，播放、暂停快捷键，缺省绑定为空格键，
+      onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，切换上下行
+    </span>
     </div>
     <div class="col-md-6 map-content" id="map">
       <div class="user-tool">
@@ -34,20 +35,25 @@
     <div class="col-md-6 pano-content" id="ppv">
       <div class="ppv_toolbar">
         <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
-             onclick="activeTool(event, 'measurePoint')"></img>
+             onclick="activeTool(event, 'measurePoint')"/>
         <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度"
-             onclick="activeTool(event, 'measureLength')"></img>
+             onclick="activeTool(event, 'measureLength')"/>
         <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
-             onclick="activeTool(event, 'measureArea')"></img>
+             onclick="activeTool(event, 'measureArea')"/>
+        <img class="ppv_button" src="public/icon/measureheigth.png" title="测量高度"
+             onclick="activeTool(event, 'measureZ')"/>
         <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
-             onclick="activeTool(event, 'measureAngle')"></img>
+             onclick="activeTool(event, 'measureAngle')"/>
         <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
-             onclick="activeTool(event, 'measureSlope')"></img>
+             onclick="activeTool(event, 'measureSlope')"/>
         <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
-             onclick="activeTool(event, 'createPoint')"></img>
-        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象" onclick="activeTool(event, 'pick')"></img>
+             onclick="activeTool(event, 'createPoint')"/>
+        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"
+             onclick="activeTool(event, 'pick')"/>
         <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
-             onclick="activeTool(event, 'remove')"></img>
+             onclick="activeTool(event, 'remove')"/>
+        <img id="btBack" class="ppv_button" src="public/icon/back.png" title="上下行"
+             onclick="activeTool(event, 'switchPic')"/>
         <!--<img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>-->
         <div class="play-button">
           <img class="ppv_button play" onclick="play(event)" src="public/icon/play.png" title="播放"></img>
@@ -87,6 +93,11 @@
     resolutions.push(cor[i].resolution);
   }
   var Maps = new HMap.Map();
+
+  // 当前可以返回的帧
+  var backID = '';
+
+  var btBack = document.getElementById('btBack');
 
   // 初始化地图
   Maps.initMap('map', {
@@ -191,6 +202,14 @@
     var lon = event.lon;
     var lat = event.lat;
     var xx = 0;
+    if (event.back) {
+      backID = event.back
+      console.log(backID)
+      btBack.style.visibility = 'visible'
+    } else {
+      backID = ''
+      btBack.style.visibility = 'hidden'
+    }
     ppv.needsUpdate = true
     Maps.setPointGeometry(pointFeature, [lon, lat])
     Maps.movePointToView([lon, lat])
@@ -288,15 +307,34 @@
   // 要素选中时显示信息
   // 响应要素被选择
   function onFeatureSelect(event) {
+    console.log(event.feature.userData)
     $('#myModalLabel').html('<span>' + event.layername + '</span>')
     $('.modal-body').html('<span>' + event.fid + '</span>')
     $('#myModal').modal('show')
+  }
+
+  /**
+   * 测量结果监听事件
+   * @param event
+   */
+  function onMeasure (event) {
+    window.setTimeout(function () {
+      console.log(event)
+      var res = ''
+      if (event) {
+        for (var key in event) {
+          res += key + ': ' + event[key] + '米' + '\n'
+        }
+      }
+      window.alert(res)
+    }, 300)
   }
 
   // 初始化实景控件
   function initPano(ptx, pty) {
     ppv = new PPV("ppv");
     // 设置服务地址
+//    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
     ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
     // 根据坐标定位实景位置
     ppv.locate(3, ptx, pty, 0);
@@ -312,6 +350,20 @@
     ppv.onFeatureSelect = onFeatureSelect;
     // 缺省等于100米，表示视点附近100米范围内的物体才显示
     ppv.scope = 1000;
+    // 测量结果监听事件
+    ppv.onMeasure = onMeasure;
+    // 设置窗口背景颜色
+    ppv.setStyle({
+      bgcolor:'rgb(255,255,128)'
+    })
+  }
+
+  /**
+   * 控制导向箭头显示影藏
+   * @param flag
+   */
+  function showControl (flag) {
+    ppv.showControl(ControlType.arrow, flag);
   }
   // 实景工具类
   function activeTool(event, type) {
@@ -355,7 +407,11 @@
         ppv.setTool(Tool.remove, true);
         removePointLayer()
         break;
+      case 'switchPic':
+        ppv.locateByID(3, backID);
+        break
     }
+    showControl (false)
   }
   // 播放
   function play() {
@@ -553,6 +609,9 @@
             geometry: {
               coordinates: [geoX, geoY, 200.5938781674623],
               type: "Point"
+            },
+            properties: {
+              name: "test"
             },
             icon: icon,
             name: item['attributes']['QLMC'],
