@@ -213,6 +213,7 @@ long 采样模式，见 setSampleMode
 | name | 标注内容 |
 | fid | 要素 id |
 | color | 颜色，替代图层设置 |
+| fixSize | 值为布尔值，为true时要素随视角变化，false时，保持大小不变 |
 | size | 点大小、线宽，单位是像素，替代图层设置 |
 | icon | 图标符号，替代图层设置 |
 | toGround | 高程值是否相对于地面{1 绝对高程，to_gound = false 2 如果帧包含地面高差信息，高程可以相对于地面 3 如果没有地面高差信息，高程可以相对于当前视点} |
@@ -306,3 +307,41 @@ string
 | :---: | :---: | :---: |
 | handle | 图层或要素handle |  图层或要素 handle |
 | visible | 布尔 |  是否可见 |
+
+### setStyle(style)
+
+
+> 设置背景样式
+
+参数
+
+| 参数 | 类型 | 说明 |
+| :---: | :---: | :---: |
+| style | Object |  样式对象 |
+
+> example
+
+ppv.setStyle({bgcolor:'rgb(255,255,128)'});
+
+### showControl(ControlType, flag)
+
+> 控制前进后退按钮显示
+
+参数
+
+| 参数 | 类型 | 说明 |
+| :---: | :---: | :---: |
+| ControlType | String |  控件类型 |
+| flag | 布尔 |  状态 |
+
+> example
+
+ppv.showControl(ControlType.arrow,false);
+
+### getVersion()
+
+> 获取当前版本
+
+> example
+
+ppv.getVersion()

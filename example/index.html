@@ -16,7 +16,8 @@
         aria-hidden="true">&times;</span></button>
       <strong>提示：</strong><span>解决放大镜bug，解决翻页键、方向键bug，优化逻辑，新增测量高度工具，新增测量结果事件，
       增加setStyle接口，用来设置背景色，增加showControl接口，可以隐藏导向箭头，播放、暂停快捷键，缺省绑定为空格键，
-      onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，切换上下行
+      onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，切换上下行, 图层上增加一个参数fixSize，为true时
+      要素随视角变化，false时，保持大小不变。
     </span>
     </div>
     <div class="col-md-6 map-content" id="map">
@@ -590,6 +591,7 @@
           color: 0xffffff,//RGBA or RGB
           opacity: 1.0,
           size: 20,
+          fixSize: true,
           offset: [0, 20],
           fontSize: 14,
           icon: icon
