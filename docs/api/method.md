@@ -308,36 +308,6 @@ string
 | handle | 图层或要素handle |  图层或要素 handle |
 | visible | 布尔 |  是否可见 |
 
-### setStyle(style)
-
-
-> 设置背景样式
-
-参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| style | Object |  样式对象 |
-
-> example
-
-ppv.setStyle({bgcolor:'rgb(255,255,128)'});
-
-### showControl(ControlType, flag)
-
-> 控制前进后退按钮显示
-
-参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| ControlType | String |  控件类型 |
-| flag | 布尔 |  状态 |
-
-> example
-
-ppv.showControl(ControlType.arrow,false);
-
 ### getVersion()
 
 > 获取当前版本
@@ -345,3 +315,26 @@ ppv.showControl(ControlType.arrow,false);
 > example
 
 ppv.getVersion()
+
+### setPref(object)
+
+> 设置背景，可视范围，放大镜等工具参数
+
+参数
+
+| 参数 | 类型 | 说明 |
+| :---: | :---: | :---: |
+| bgcolor | String |  背景颜色 |
+| fullView | 布尔 |  照片是否填满div，不管是否会被裁剪 |
+| enableArrow | 布尔 |  是否显示方向键 |
+| enableHistory | 布尔 |  是否允许历史帧 |
+| scope | number |  可视范围（米） |
+| magnifier | Object |  放大镜工具参数 |
+
+放大镜工具参数
+
+| 参数 | 类型 | 说明 |
+| :---: | :---: | :---: |
+| size | number |  放大镜矩形大小 |
+| zoom | number |  放大倍数 |
+| fix | 布尔 |  是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动 |

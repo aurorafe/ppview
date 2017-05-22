@@ -331,6 +331,29 @@
     }, 300)
   }
 
+  // 监听工具切换事件,功能改变时，触发事件
+  function onTool (event) {
+    // 24和25为播放暂停事件
+    if ((event.tool !== 24) && (event.tool !== 25)) {
+      ppv.stop()
+    }
+  }
+
+  // 监听根据鼠标定位事件
+  function onLocate (event) {
+    if (event.state === 0) {
+      console.log('成功')
+    } else if (event.state === 1) {
+      console.log('类型错误')
+    } else if (event.state === 2) {
+      console.log('数据错误')
+    } else if (event.state === 3) {
+      console.log('图片错误')
+    } else if (event.state === 4) {
+      console.log('服务忙')
+    }
+  }
+
   // 初始化实景控件
   function initPano(ptx, pty) {
     ppv = new PPV("ppv");
@@ -339,6 +362,8 @@
     ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
     // 根据坐标定位实景位置
     ppv.locate(3, ptx, pty, 0);
+    // 监听定位事件
+    ppv.onLocate = onLocate;
     // 响应位置变化事件
     ppv.onPosition = onPosition;
     // 响应视角变化
@@ -353,9 +378,21 @@
     ppv.scope = 1000;
     // 测量结果监听事件
     ppv.onMeasure = onMeasure;
-    // 设置窗口背景颜色
-    ppv.setStyle({
-      bgcolor:'rgb(255,255,128)'
+    // 监听工具切换事件,功能改变时，触发事件
+    ppv.onTool = onTool;
+
+    // 设置背景，可视范围，放大镜等工具参数
+    ppv.setPref({
+      bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
+      fullView: true,//照片是否填满div，不管是否会被裁剪
+      enableArrow: true,
+      enableHistory: true,
+      scope: 100, // 可视范围
+      magnifier:{
+        size: 256,
+        zoom: 5.0,
+        fix: false // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
+      }
     })
   }
 
@@ -364,7 +401,18 @@
    * @param flag
    */
   function showControl (flag) {
-    ppv.showControl(ControlType.arrow, flag);
+    ppv.setPref({
+      bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
+      fullView: true,//照片是否填满div，不管是否会被裁剪
+      enableArrow: flag,
+      enableHistory: true,
+      scope: 100, // 可视范围
+      magnifier:{
+        size: 256,
+        zoom: 5.0,
+        fix: false // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
+      }
+    })
   }
   // 实景工具类
   function activeTool(event, type) {
