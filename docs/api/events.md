@@ -65,7 +65,7 @@ event={
 ## onMeasure(def) 
 > 响应测量工具
 
-def 不同德测量工具，返回不同的定义
+def 不同的测量工具，返回不同的定义
  * 样例 1：
 
  ```json
@@ -78,10 +78,25 @@ def 不同德测量工具，返回不同的定义
  ```json
  {"length":10.459530,"dz":10.232580,"dxy":2.167046}
  ```
-## onLocate
+ 
+## onLocate(event)
 > 响应 locate 和 locateByID，可判断是否成功  
+
 参数  
-event={   
-state:LocateState.success  
+
+```javascript
+var LocateState= { success:0, typeError:1, dataError:2, imageError:3, busy: 4 };
+event = {   
+  state: LocateState.success  
 }   
-varLocateState= { success:0, typeError:1, dataError:2, imageError:3 };  
+```
+
+## onTool(event)
+
+> 监听工具切换事件,功能改变时，触发事件
+
+```javascript
+{
+  tool: '(对应的工具id)'
+}
+```

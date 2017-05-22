@@ -15,9 +15,9 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <strong>提示：</strong><span>解决放大镜bug，解决翻页键、方向键bug，优化逻辑，新增测量高度工具，新增测量结果事件，
-      增加setStyle接口，用来设置背景色，增加showControl接口，可以隐藏导向箭头，播放、暂停快捷键，缺省绑定为空格键，
-      onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，切换上下行, 图层上增加一个参数fixSize，为true时
-      要素随视角变化，false时，保持大小不变。
+      播放、暂停快捷键，缺省绑定为空格键，onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，
+      切换上下行, 图层上增加一个参数fixSize，为true时
+      要素随视角变化，false时，保持大小不变。ppv增加一个参数setPref（）详见API文档。
     </span>
     </div>
     <div class="col-md-6 map-content" id="map">
@@ -374,8 +374,6 @@
     ppv.onFeatureRemove = onFeatureRemove;
     // 响应要素被选中事件
     ppv.onFeatureSelect = onFeatureSelect;
-    // 缺省等于100米，表示视点附近100米范围内的物体才显示
-    ppv.scope = 1000;
     // 测量结果监听事件
     ppv.onMeasure = onMeasure;
     // 监听工具切换事件,功能改变时，触发事件
@@ -418,6 +416,7 @@
   function activeTool(event, type) {
     // 页面上的按钮，如果在ppv上叠加，鼠标事件要阻止冒泡否则会造成穿透点击到窗口，影响插件事件
     event.stopPropagation();
+    showControl (false)
     switch (type) {
       case 'measurePoint':
         ppv.setTool(Tool.measurePoint, true);
@@ -455,12 +454,12 @@
       case 'remove': // 创建叠加的要素不能通过ppv.setTool(Tool.remove, true)方法移除
         ppv.setTool(Tool.remove, true);
         removePointLayer()
+        showControl (true)
         break;
       case 'switchPic':
         ppv.locateByID(3, backID);
         break
     }
-    showControl (false)
   }
   // 播放
   function play() {
