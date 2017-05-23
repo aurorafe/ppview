@@ -33,32 +33,34 @@
         <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
       </div>
     </div>
-    <div class="col-md-6 pano-content" id="ppv">
-      <div class="ppv_toolbar">
-        <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
-             onclick="activeTool(event, 'measurePoint')"/>
-        <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度"
-             onclick="activeTool(event, 'measureLength')"/>
-        <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
-             onclick="activeTool(event, 'measureArea')"/>
-        <img class="ppv_button" src="public/icon/measureheigth.png" title="测量高度"
-             onclick="activeTool(event, 'measureZ')"/>
-        <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
-             onclick="activeTool(event, 'measureAngle')"/>
-        <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
-             onclick="activeTool(event, 'measureSlope')"/>
-        <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
-             onclick="activeTool(event, 'createPoint')"/>
-        <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"
-             onclick="activeTool(event, 'pick')"/>
-        <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
-             onclick="activeTool(event, 'remove')"/>
-        <img id="btBack" class="ppv_button" src="public/icon/back.png" title="上下行"
-             onclick="activeTool(event, 'switchPic')"/>
-        <!--<img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>-->
-        <div class="play-button">
-          <img class="ppv_button play" onclick="play(event)" src="public/icon/play.png" title="播放"></img>
-          <img class="ppv_button stop" onclick="stop(event)" src="public/icon/stop.png" title="暂停"></img>
+    <div class="col-md-6 pano-content">
+      <div id="ppv">
+        <div class="ppv_toolbar">
+          <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
+               onclick="activeTool(event, 'measurePoint')"/>
+          <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度"
+               onclick="activeTool(event, 'measureLength')"/>
+          <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
+               onclick="activeTool(event, 'measureArea')"/>
+          <img class="ppv_button" src="public/icon/measureheigth.png" title="测量高度"
+               onclick="activeTool(event, 'measureZ')"/>
+          <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
+               onclick="activeTool(event, 'measureAngle')"/>
+          <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
+               onclick="activeTool(event, 'measureSlope')"/>
+          <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
+               onclick="activeTool(event, 'createPoint')"/>
+          <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"
+               onclick="activeTool(event, 'pick')"/>
+          <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
+               onclick="activeTool(event, 'remove')"/>
+          <img id="btBack" class="ppv_button" src="public/icon/back.png" title="上下行"
+               onclick="activeTool(event, 'switchPic')"/>
+          <!--<img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>-->
+          <div class="play-button">
+            <img class="ppv_button play" onclick="play(event)" src="public/icon/play.png" title="播放"></img>
+            <img class="ppv_button stop" onclick="stop(event)" src="public/icon/stop.png" title="暂停"></img>
+          </div>
         </div>
       </div>
     </div>
@@ -349,7 +351,7 @@
       console.log('数据错误')
     } else if (event.state === 3) {
       console.log('图片错误')
-    } else if (event.state === 4) {
+    } else if (event.state === LocateState.busy) {
       console.log('服务忙')
     }
   }
@@ -382,7 +384,7 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: true, // 照片是否填满div，不管是否会被裁剪
+      fullView: 1, //fix: 0,保持全部数据可见: 1, // 裁剪，充满div, stretch: 2 // 拉伸，充满div
       enableArrow: true,
       enableHistory: true,
       scope: 100, // 可视范围
@@ -399,18 +401,8 @@
    * @param flag
    */
   function showControl (flag) {
-    ppv.setPref({
-      bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: true, // 照片是否填满div，不管是否会被裁剪
-      enableArrow: flag,
-      enableHistory: true,
-      scope: 100, // 可视范围
-      magnifier:{
-        size: 256,
-        zoom: 5.0,
-        fix: false // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
-      }
-    })
+    var pref = ppv.getPref()
+    pref['enableArrow'] = flag
   }
   // 实景工具类
   function activeTool(event, type) {
@@ -914,7 +906,7 @@
       params: {
         params: JSON.stringify({
           layerName: 'GL_LD_JDSS',
-          filter: 'ID IS NOT NULL',
+          filter: 'EQUIPMENT_TYPE=\'11\' AND ID IS NOT NULL',
           isReturnGeometry: true
         })
       }
