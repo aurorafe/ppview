@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>-->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>实景示例</title>
   <link rel="stylesheet" href="./public/scripts/HMap/HMap.css" type="text/css">
-  <link rel="stylesheet" href="./public/scripts/Bootstrap/css/bootstrap.min.css"></link>
+  <link rel="stylesheet" href="./public/scripts/Bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="./index.css">
 </head>
 <body>
@@ -14,10 +14,7 @@
     <div class="alert alert-success alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
-      <strong>提示：</strong><span>解决放大镜bug，解决翻页键、方向键bug，优化逻辑，新增测量高度工具，新增测量结果事件，
-      播放、暂停快捷键，缺省绑定为空格键，onPosition事件中，增加反向箭头信息，如果当前帧包含反向帧，可以通过locateByID，
-      切换上下行, 图层上增加一个参数fixSize，为true时
-      要素随视角变化，false时，保持大小不变。ppv增加一个参数setPref（）详见API文档。
+      <strong>提示：</strong><span>统一设置参数，增加窗口自适应fullView模式（有保持全部数据可见，裁剪，镂空，拉伸）。增加缩略图预览，更新全部数据。
     </span>
     </div>
     <div class="col-md-6 map-content" id="map">
@@ -33,7 +30,7 @@
         <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
       </div>
     </div>
-    <div class="col-md-6 pano-content">
+    <div id="ppv_container" class="col-md-6 pano-content">
       <div id="ppv">
         <div class="ppv_toolbar">
           <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
@@ -197,6 +194,8 @@
     var ptx, pty;
     ptx = 115.87258481455471;
     pty = 26.380662006921387;
+//    ptx = 116.131610;
+//    pty = 26.227284;
     initPano(ptx, pty)
   }
 
@@ -384,7 +383,8 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: 1, //fix: 0,保持全部数据可见: 1, // 裁剪，充满div, stretch: 2 // 拉伸，充满div
+      fullView: FullMode.fill, // fill: 1,保持全部数据可见: trans: 1 ,镂空，露出背景，保持全部数据可见,
+      // stretch: 2 // 拉伸，充满div, clip: 3, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,
       scope: 100, // 可视范围
@@ -444,9 +444,9 @@
         ppv.setTool(Tool.pick, true);
         break;
       case 'remove': // 创建叠加的要素不能通过ppv.setTool(Tool.remove, true)方法移除
+        removePointLayer();
+        showControl (true);
         ppv.setTool(Tool.remove, true);
-        removePointLayer()
-        showControl (true)
         break;
       case 'switchPic':
         ppv.locateByID(3, backID);
@@ -906,7 +906,7 @@
       params: {
         params: JSON.stringify({
           layerName: 'GL_LD_JDSS',
-          filter: 'EQUIPMENT_TYPE=\'11\' AND ID IS NOT NULL',
+          filter: 'AND ID IS NOT NULL', // EQUIPMENT_TYPE=\'11\' AND ID IS NOT NULL (情报板)
           isReturnGeometry: true
         })
       }
