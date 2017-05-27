@@ -1,4 +1,4 @@
-<!--<!DOCTYPE html>-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -154,6 +154,7 @@
   })
 
   addLine();
+//  addKeyListener();
 
   // 添加实景所在路线
   function addLine() {
@@ -335,10 +336,22 @@
   // 监听工具切换事件,功能改变时，触发事件
   function onTool (event) {
     // 24和25为播放暂停事件
-    if ((event.tool !== 24) && (event.tool !== 25)) {
+    if ((event.tool !== 31) && (event.tool !== 32)) {
       ppv.stop()
     }
   }
+
+  function addKeyListener () {
+    $('body').on('keydown', function (event) {
+      var e = !event ? window.event : event;
+      var currKey = e.keyCode || e.which || e.charCode;
+      if (currKey === 32) {
+        $('.play').css('display', ($('.stop').css('display')))
+        $('.stop').css('display', ($('.play').css('display')))
+      }
+    })
+  }
+
 
   // 监听根据鼠标定位事件
   function onLocate (event) {
@@ -383,15 +396,15 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: FullMode.fill, // fill: 1,保持全部数据可见: trans: 1 ,镂空，露出背景，保持全部数据可见,
-      // stretch: 2 // 拉伸，充满div, clip: 3, 裁剪，充满div，数据不全
+      fullView: FullMode.fill, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
+      // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,
       scope: 100, // 可视范围
       magnifier:{
         size: 256,
         zoom: 5.0,
-        fix: false // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
+        fix: true // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
       }
     })
   }
