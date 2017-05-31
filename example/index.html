@@ -149,15 +149,18 @@
       if (closestPoint) {
         console.log(closestPoint)
         ppv.locate(3, closestPoint[0], closestPoint[1], 0);
+        window.setTimeout(function () {
+          ppv.step(-5)
+        }, 200)
       }
     }
   })
 
   addLine();
-//  addKeyListener();
+  //  addKeyListener();
 
   // 添加实景所在路线
-  function addLine() {
+  function addLine () {
     var line = lineData['data']['features'][1];
     line['attributes']['style'] = {
       stroke: {
@@ -201,10 +204,12 @@
   }
 
   // 响应位置变化事件
-  function onPosition(event) {
+  function onPosition (event) {
     var lon = event.lon;
     var lat = event.lat;
     var xx = 0;
+    // 增加了branch（转向）、history（历史）、next（下一帧）、prev（上一帧）、back（上下行）信息.
+    // 注意，back和以前定义不同
     if (event.back) {
       backID = event.back
       console.log(backID)
@@ -219,7 +224,7 @@
   }
 
   // 响应角度变化事件
-  function onEye(event) {
+  function onEye (event) {
     var heading = event.heading;
     var fovx = event.fovx;
     console.log(heading);
@@ -231,7 +236,7 @@
   }
   // 响应创建要素(点)-- 点击工具创建的要素
   var fid = 0;
-  function onFeatureCreate(event) {
+  function onFeatureCreate (event) {
     console.log(event)
     fid++;
     event.fid = fid;
@@ -282,7 +287,7 @@
    * 当在实景控件内部创建点时，响应事件在地图上绘出点
    * @param event
    */
-  function creatFeatureOnMapView(event) {
+  function creatFeatureOnMapView (event) {
     var _point = {
       attributes: {
         ID: event['fid'],
@@ -302,14 +307,14 @@
   }
 
   // 响应要素被移除
-  function onFeatureRemove(event) {
+  function onFeatureRemove (event) {
     var fid = event.fid;
     console.log(fid)
   }
 
   // 要素选中时显示信息
   // 响应要素被选择
-  function onFeatureSelect(event) {
+  function onFeatureSelect (event) {
     console.log(event.feature.userData)
     $('#myModalLabel').html('<span>' + event.layername + '</span>')
     $('.modal-body').html('<span>' + event.fid + '</span>')
@@ -369,11 +374,14 @@
   }
 
   // 初始化实景控件
-  function initPano(ptx, pty) {
+  function initPano (ptx, pty) {
     ppv = new PPV("ppv");
     // 设置服务地址
-//    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
-    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
+    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
+//    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
+
+    // 采样模式定义
+    ppv.setSampleMode(SampleMode.photo); // photo摄影法，ground地面采样模式
     // 根据坐标定位实景位置
     ppv.locate(3, ptx, pty, 0);
     // 监听定位事件
@@ -396,15 +404,32 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: FullMode.fill, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
+      fullView: FullMode.trans, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
       // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,
       scope: 100, // 可视范围
-      magnifier:{
+      magnifier: {
         size: 256,
         zoom: 5.0,
         fix: true // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
+      },
+      key: {
+        play: 32,		// 播放	space
+        fforward: 33,	// 快进	page up
+        fbackward: 34,	// 快退	page down
+        forward: 38,		// 前进	up
+        backward: 40,	// 后退	down
+        fullscreen: 120	// 全屏	f9
+      },
+      label: {
+        fontface: '微软雅黑',	// 字体
+        fontsize: 15,			// 字高
+        textColor: '#FFFFFF',	// 文字颜色
+        borderThickness: 1,		// 边框线宽，如果取0值，将禁用边框
+        borderFillet: 2,			// 边框圆角
+        borderColor: 'rgba(0,0,0,0.8)',				// 边框颜色
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'	// 背景颜色
       }
     })
   }
@@ -418,10 +443,10 @@
     pref['enableArrow'] = flag
   }
   // 实景工具类
-  function activeTool(event, type) {
+  function activeTool (event, type) {
     // 页面上的按钮，如果在ppv上叠加，鼠标事件要阻止冒泡否则会造成穿透点击到窗口，影响插件事件
     event.stopPropagation();
-    showControl (false)
+    showControl(false)
     switch (type) {
       case 'measurePoint':
         ppv.setTool(Tool.measurePoint, true);
@@ -458,7 +483,7 @@
         break;
       case 'remove': // 创建叠加的要素不能通过ppv.setTool(Tool.remove, true)方法移除
         removePointLayer();
-        showControl (true);
+        showControl(true);
         ppv.setTool(Tool.remove, true);
         break;
       case 'switchPic':
@@ -467,19 +492,19 @@
     }
   }
   // 播放
-  function play() {
+  function play () {
     ppv.play()
     $('.play').css('display', 'none')
     $('.stop').css('display', 'block')
   }
   // 暂停
-  function stop() {
+  function stop () {
     ppv.stop()
     $('.play').css('display', 'block')
     $('.stop').css('display', 'none')
   }
   // 外部叠加点要素
-  function addPointLayer() {
+  function addPointLayer () {
     var pointFeat = liveList['data']['features']
     var icon = 'public/icon/point_' + parseInt(Math.random() * 4 + 1, 10) + '.png'
     var _layerPointDef = {
@@ -517,7 +542,7 @@
     })
   }
   // 移除叠加要素
-  function removePointLayer() {
+  function removePointLayer () {
     // 通过layerNames移除地图上要素
     Maps.removeFeatureByLayerNames(['pointFeat', 'point', 'GIS_QL', 'GIS_SD', 'GIS_QBB', 'GIS_QXZ', 'GIS_JKSB', 'GIS_JDSS'])
     // 移除实景叠加要素
@@ -580,52 +605,52 @@
   // 叠加一千条数据
   function testMuchPoints () {
     axios.get('./public/json/GIS_QL.json').then(function (response) {
-        var pointFeat = response['data']['data']['features']
-        var icon = 'public/icon/point_' + parseInt(Math.random() * 4 + 1, 10) + '.png'
-        var _layerPointDef = {
-          name: "桥梁",
-          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
-          color: 0xffffff,//RGBA or RGB
-          opacity: 1.0,
-          size: 20,
-          offset: [0, 20],
-          fontSize: 14,
-          icon: icon
-        };
-        var _layerPoint = ppv.addLayer(_layerPointDef);
-        pointFeat.forEach(function (item) {
-          item['attributes'].style = { // 自定义相关样式
-            icon: {
-              imageSrc: 'public/icon/point_1.png'
-            }
+      var pointFeat = response['data']['data']['features']
+      var icon = 'public/icon/point_' + parseInt(Math.random() * 4 + 1, 10) + '.png'
+      var _layerPointDef = {
+        name: "桥梁",
+        type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+        color: 0xffffff,//RGBA or RGB
+        opacity: 1.0,
+        size: 20,
+        offset: [0, 20],
+        fontSize: 14,
+        icon: icon
+      };
+      var _layerPoint = ppv.addLayer(_layerPointDef);
+      pointFeat.forEach(function (item) {
+        item['attributes'].style = { // 自定义相关样式
+          icon: {
+            imageSrc: 'public/icon/point_1.png'
           }
-          var geo = item.geometry.split(' ')
-          var geoX = geo[1].slice(1, geo[1].length)
-          var geoY = geo[2].slice(0, geo[2].length - 1)
-          var __item = {
-            fid: item['attributes']['QLDM'],
-            geometry: {
-              coordinates: [geoX, geoY, 200.5938781674623],
-              type: "Point"
-            },
-            icon: icon,
-            name: item['attributes']['QLMC'],
-            toGround: 0,
-            type: "Feature"
-          }
+        }
+        var geo = item.geometry.split(' ')
+        var geoX = geo[1].slice(1, geo[1].length)
+        var geoY = geo[2].slice(0, geo[2].length - 1)
+        var __item = {
+          fid: item['attributes']['QLDM'],
+          geometry: {
+            coordinates: [geoX, geoY, 200.5938781674623],
+            type: "Point"
+          },
+          icon: icon,
+          name: item['attributes']['QLMC'],
+          toGround: 0,
+          type: "Feature"
+        }
 //          ppv.addFeature(_layerPoint, __item);
-        })
-        Maps.addPoints(pointFeat, {
-          layerName: 'pointFeat'
-        });
       })
+      Maps.addPoints(pointFeat, {
+        layerName: 'pointFeat'
+      });
+    })
       .catch(function (error) {
         console.log(error);
       });
   }
 
   // 叠加桥梁数据
-  function addQLLayer() {
+  function addQLLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
@@ -635,57 +660,57 @@
         })
       }
     }).then(function (response) {
-        var pointFeat = response['data']['data']['features']
-        var icon = 'public/icon/marker/icon_map_ql.png'
-        var _layerPointDef = {
-          name: "桥梁",
-          type: "Point",//Point, Line, Polygon 三种类型，并非强约束
-          color: 0xffffff,//RGBA or RGB
-          opacity: 1.0,
-          size: 20,
-          fixSize: true,
-          offset: [0, 20],
-          fontSize: 14,
-          icon: icon
-        };
-        var _layerPoint = ppv.addLayer(_layerPointDef);
-        pointFeat.forEach(function (item) {
-          item['attributes'].style = { // 自定义相关样式
-            icon: {
-              imageSrc: 'public/icon/marker/icon_map_ql.png'
-            }
+      var pointFeat = response['data']['data']['features']
+      var icon = 'public/icon/marker/icon_map_ql.png'
+      var _layerPointDef = {
+        name: "桥梁",
+        type: "Point",//Point, Line, Polygon 三种类型，并非强约束
+        color: 0xffffff,//RGBA or RGB
+        opacity: 1.0,
+        size: 20,
+        fixSize: true,
+        offset: [0, 20],
+        fontSize: 14,
+        icon: icon
+      };
+      var _layerPoint = ppv.addLayer(_layerPointDef);
+      pointFeat.forEach(function (item) {
+        item['attributes'].style = { // 自定义相关样式
+          icon: {
+            imageSrc: 'public/icon/marker/icon_map_ql.png'
           }
-          var geo = item.geometry.split(' ')
-          var geoX = geo[1].slice(1, geo[1].length)
-          var geoY = geo[2].slice(0, geo[2].length - 1)
-          var __item = {
-            fid: item['attributes']['QLDM'],
-            geometry: {
-              coordinates: [geoX, geoY, 200.5938781674623],
-              type: "Point"
-            },
-            properties: {
-              name: "test"
-            },
-            icon: icon,
-            name: item['attributes']['QLMC'],
-            toGround: 0,
-            type: "Feature"
-          }
-          ppv.addFeature(_layerPoint, __item);
-        })
-        Maps.addPoints(pointFeat, {
-          layerName: 'GIS_QL',
-          zoomToExtent: true
-        });
+        }
+        var geo = item.geometry.split(' ')
+        var geoX = geo[1].slice(1, geo[1].length)
+        var geoY = geo[2].slice(0, geo[2].length - 1)
+        var __item = {
+          fid: item['attributes']['QLDM'],
+          geometry: {
+            coordinates: [geoX, geoY, 200.5938781674623],
+            type: "Point"
+          },
+          properties: {
+            name: "test"
+          },
+          icon: icon,
+          name: item['attributes']['QLMC'],
+          toGround: 0,
+          type: "Feature"
+        }
+        ppv.addFeature(_layerPoint, __item);
       })
+      Maps.addPoints(pointFeat, {
+        layerName: 'GIS_QL',
+        zoomToExtent: true
+      });
+    })
       .catch(function (error) {
         console.log(error);
       });
   }
 
   // 叠加隧道数据
-  function addSDLayer() {
+  function addSDLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
@@ -742,7 +767,7 @@
   }
 
   // 叠加情报板数据
-  function addQBLayer() {
+  function addQBLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
@@ -800,7 +825,7 @@
   }
 
   // 叠加气象站数据
-  function addQXLayer() {
+  function addQXLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
@@ -857,7 +882,7 @@
   }
 
   // 叠加监控设备数据
-  function addJKLayer() {
+  function addJKLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
@@ -914,7 +939,7 @@
   }
 
   // 叠加机电设施数据
-  function addJDSSLayer() {
+  function addJDSSLayer () {
     axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
       params: {
         params: JSON.stringify({
