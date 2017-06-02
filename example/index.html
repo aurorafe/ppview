@@ -128,7 +128,7 @@
         isDefault: true,
         layerType: 'TileXYZ',
         opaque: false, //图层是否不透明
-        layerUrl: 'http://171.34.40.68:6080/arcgis/rest/services/jiangxi/JXMAP_2017_2/MapServer',
+        layerUrl: 'http://111.75.200.54:6080/arcgis/rest/services/JXGS_FOUR/MapServer',
       }
     ]
   });
@@ -377,8 +377,8 @@
   function initPano (ptx, pty) {
     ppv = new PPV("ppv");
     // 设置服务地址
-    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
-//    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
+//    ppv.setServer("http://192.168.0.226:8013//PPVServer.asmx");
+    ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
 
     // 采样模式定义
     ppv.setSampleMode(SampleMode.photo); // photo摄影法，ground地面采样模式
@@ -404,7 +404,7 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: FullMode.trans, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
+      fullView: FullMode.clip, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
       // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,
@@ -680,6 +680,7 @@
             imageSrc: 'public/icon/marker/icon_map_ql.png'
           }
         }
+        item['attributes']['ID'] = item['attributes']['OBJECTID']
         var geo = item.geometry.split(' ')
         var geoX = geo[1].slice(1, geo[1].length)
         var geoY = geo[2].slice(0, geo[2].length - 1)
