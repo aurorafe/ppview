@@ -2,11 +2,11 @@
 
 .ppv_toolbar{
 	position: absolute;
-	margin:10;
+	margin: 10px;
 	background-color: rgba(0,0,0,0.5);
 }
 .ppv_button{
-	height:32;
+	height: 32px;
 	background-color: transparent;
 }
 .ppv_button:hover{
