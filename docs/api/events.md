@@ -5,18 +5,51 @@ var lon = event.lon;
 var lat = event.lat;  
 > 响应视点位置改变
 
-参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| lon | Number | 经度 |
-| lat | Number | 纬度 |
-| alt | Number | 高程（m）|
+可响应的数据如下
+```javascript
+var event = {
+  lon: 114.012, // 经度单位为度
+  lat: 39.231, // 纬度单位为度
+  alt: 62.089, // 高程单位为米
+  prev: { // 前一幁
+    id: 1234,
+    heading: 67,
+  },
+  next: { // 下一帧
+    id: 1234,
+    heading: 67,
+  },
+  back: { // 返回
+    id: 1234,
+    heading: 67,
+  },
+  branch: [ // 分叉
+    {
+      heading: 67,
+    },
+    {
+      id: 1234,
+      heading: 67,
+    }
+  ],
+  history: [ // 历史帧
+    {
+      id: 1234,
+      heading: 67,
+    },
+    {
+      id: 1234,
+      heading: 67,
+    }
+  ]
+}
+```
 
 
 ## onEye(event)
 var heading = event.heading;  
 var fovx = event.fovx;  
+
 > 响应视角改变
 
 参数
@@ -41,12 +74,14 @@ var fovx = event.fovx;
 
 参数
 
-event={ 
-    layer:hlayer, //图层 handle
-    feature:handle, //要素 handle
-    layername:"lay_name", //图层名称
-    fid:123 //要素 id
+```javascript
+var event={ 
+  layer: layer, //图层 handle
+  feature: handle, //要素 handle
+  layername: "layerName", //图层名称
+  fid: 123 //要素 id
 }
+```
 
 
 ## onFeatureRemove(event) 
@@ -54,12 +89,14 @@ event={
 
 参数 
  
-event={   
-    layer:hlayer, //图层 handle
-    feature:handle, //要素 handle
-    layername:"lay_name", //图层名称
-    fid:123 //要素 id
-}  
+```javascript
+var event={   
+  layer:hlayer, //图层 handle
+  feature:handle, //要素 handle
+  layername:"lay_name", //图层名称
+  fid:123 //要素 id
+} 
+``` 
 
 
 ## onMeasure(def) 
@@ -67,28 +104,38 @@ event={
 
 def 不同的测量工具，返回不同的定义
  * 样例 1：
-
+ 
  ```json
- {"length”:123.456}
+ {
+  "length": 123.456
+ }
+ }
  ```
-
-
  * 样例 2：
 
  ```json
- {"length":10.459530,"dz":10.232580,"dxy":2.167046}
+ {
+   "length":10.459530,
+   "dz":10.232580,
+   "dxy":2.167046
+ }
  ```
  
 ## onLocate(event)
 > 响应 locate 和 locateByID，可判断是否成功  
 
-参数  
+event.state
+
+其中 state 可选值：
 
 ```javascript
-var LocateState= { success:0, typeError:1, dataError:2, imageError:3, busy: 4 };
-event = {   
-  state: LocateState.success  
-}   
+var LocateState={
+  success: 0, // 成功
+  typeError: 1, // 类型错误
+  dataError: 2, // 数据错误
+  imageError: 3, // 图片错误
+  busy: 4 // 服务忙
+};
 ```
 
 ## onTool(event)

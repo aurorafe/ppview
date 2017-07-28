@@ -4,6 +4,10 @@
 
 ## 方法
 
+### getVersion()
+
+> 查询当前 ppv 版本, 返回一个字符串
+
 ### setServer(url)
 > 设置服务器地址，并验证服务。
 
@@ -11,18 +15,72 @@
 | :---: | :---: | :---: |
 | WebService服务地址 | String | "http://211.101.37.253:8013//PPVServer.asmx" |
 
+### setPref()
 
+> 设定 ppv 系统参数
 
-### locate(type, lon, lat, alt)
+example: 
+
+```javascript
+var pref = {
+  bgcolor: 0x000000, // 'rgb(255,255,255)'，背景色
+  fullView: FullMode.trans, // 照片填充窗口的模式
+  enableArrow: true, // 方向箭头
+  enableHistory: true, // 历史表盘
+  scope: 100, // 可视范围，米，只对点要素起作用
+  thumb: 'Small', // 缩略图尺寸，可选['Middle', ’Small’]，缺省'Middle'
+  arrows: { // 方向箭头位置
+    forward: 5, // 向前，米
+    below: 1.8, // 降低，米
+    lean: 15, // 前倾，度
+  },
+  magnifier: { // 放大镜
+    size: 256, // 放大镜尺寸，像素
+    zoom: 5.0, // 放大倍数
+    fix: false // 是否启动放大镜后，固定位置不变。PPVision 客户端 开发指南另一种方式是，放大镜随鼠标移动
+  },
+  key: { // 快捷键
+    play: 32, // 播放 space
+    fforward: 33, // 快进 page up
+    fbackward: 34, // 快退 page down
+    forward: 38, // 前进 up
+    backward: 40, // 后退 down
+    fullscreen: 120 // 全屏 f9
+  },
+  label: { // 标注样式
+    fontface: '微软雅黑', // 字体
+    fontsize: 15, // 字高，像素
+    textColor: '#000000', // 文字颜色
+    borderThickness: 1, // 边框线宽，如果取 0 值，将禁用边框
+    borderFillet: 0, // 边框圆角
+    borderColor: 'rgba(0,0,0,0.8)', //边框颜色
+    backgroundColor: 'rgba(255,255,255,0.8)' //背景颜色
+  }
+}
+// 其中 fullView 可选值：
+var FullMode= {
+  fill: 1, // 填充，黑边，保持全部数据可见
+  trans: 2, // 镂空，露出背景，保持全部数据可见
+  clip: 3, // 裁剪，充满 div，数据不全
+  stretch: 4 // 拉伸，充满 div，会变形
+}
+// 注意：ppv 在网页中布局与 css 样式，请参考样例页面中的设计
+```
+
+### getPref()
+
+> 获得当前ppv系统设置
+
+### locate(type, lon, lat, key)
 
 > 异步方式打开全景或可测量影像，会触发 onLocate 事件 
 
 | 参数 | type | example | 说明 |
 | :---: | :---: | :---: | :---: |
-| type | Number | 3 | 图像类型，目前仅支持 3、4 |
+| type | Number | 3 | 图像类型，目前仅支持 0、3、4 |
 | lon | Number | 112.56 | 经度 |
 | lat | Number | 23.56 | 纬度 |
-| alt | Number | 0 | 高程 |
+| key | string | '' | 用户密钥 |
 > 事件  
 触发 onLocate 
 详见事件描述
@@ -32,71 +90,93 @@
 
 | 参数 | type | example | 说明 |
 | :---: | :---: | :---: | :---: |
-| type | Number | 3 | 图像类型，目前仅支持 3、4 |
+| type | Number | 3 | 图像类型，目前仅支持 0、3、4 |
 | id | String | '1111' | 每张影像对应的唯一标识 |
+| key | String | '' | 用户密钥 |
 
 > 事件
 触发 onLocate事件
 
+### step(step)
+
+> 前进或后退
+
+| 参数 | type | example | 说明 |
+| :---: | :---: | :---: | :---: |
+| step | Number | -1 | 帧数，负数表示后退 |
+
 ### play() 
+
 > 开始自动播放轨迹图像
 
 ### stop() 
+
 > 停止播放轨迹图像
 
-### setTool(cid) 
+### isPlaying()
+
+> 是否正在播放图像, 返回true/false
+
+### setTool(tool) 
+
 > 设置当前工具
 
-| 类型 | 说明 |
-| :---: | :---: |
-参数 
-cid 
-工具定义 
-var Tool= {
-    none:0, 
-    measurePoint:1, 
-    measureLength:2,
-    measureArea:3, 
-    measureZ:4, 
-    measureFacade:5, 
-    measureAngle:6, 
-    measureSlope:7, 
-    createPoint:11, 
-    createPolyline:12, 
-    createPolygon:13, 
-    pick:21, 
-    remove:22
- };
-bool mousedown 是否触发了 mousedown事件
+example: 
+```javascript
+var tool = {
+  none: 0,
+  measurePoint: 1,
+  measureLength: 2,
+  measureArea: 3,
+  measureZ: 4,
+  measureFacade: 5,
+  measureAngle: 6,
+  measureSlope: 7,
+  createPoint: 11,
+  createPolyline: 12,
+  createPolygon: 13,
+  caliplane: 14,
+  pick: 21,
+  remove: 22,
+  fullscreen: 23,
+  lrs: 24,
+  play: 31,
+  stop: 32,
+  next: 33,
+  prev: 34,
+  branch: 35,
+  back: 36,
+  history: 37
+}
+```
 
-事件
-触发 onTool事件  
+#### 事件
 
+> 触发 onTool 事件
 
 
 ### getTool() 
-> 查询当前工具
-返回   
-工具 id ，见 setTool参数 cid
 
-定义
+> 查询当前工具返回工具 id ，见 setTool参数 cid定义
+
 ### setSampleMode(mode) 
 > 设置采样模式。摄影测量法，定位一个点需要在两个影像点击两次，标定面法只需要点
-击一次，但需要预先标定面。
+  击一次，但需要预先标定面
 
 mode 采样模式
- varSampleMode= { 
-    none:0, 
-    cloud:1,
-    photo:2, 
-    ground:3,
-    plane:4, 
-    object:5, 
-    depth:6
- };
-事件  
-
-触发 onSampleMode事件  
+```javascript
+var SampleMode={
+  none: 0,
+  cloud: 1,
+  photo: 2,
+  ground: 3,
+  plane: 4,
+  object: 5,
+  depth: 6
+}
+```
+#### 事件  
+> 触发 onSampleMode事件  
 
 
 ### getSampleMode() 
@@ -117,6 +197,7 @@ long 采样模式，见 setSampleMode
 
 
 ### lookAt(lon, lat, alt) 
+
 > 定位视线方向，通过当前视点位置与目标点坐标，确定一条射线
 
 | 参数 | 类型 | 说明 |
@@ -126,6 +207,7 @@ long 采样模式，见 setSampleMode
 | alt | Number | 高程 |
 
 ### addLayer(def) 
+
 > 添加一个图层
 
 参数def 图层定义
@@ -154,7 +236,9 @@ long 采样模式，见 setSampleMode
 
 
 ### findLayer(name) 
+
 > 根据图层名，查找图层
+
 参数
 
 | 参数 | 类型 | 说明 |
@@ -162,14 +246,16 @@ long 采样模式，见 setSampleMode
 | name | String | 图层名 |
 
 ### getLayer
+
 > 获得图层定义 
+
 参数 
+
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
 | handle | :---: | 图层句柄 |
 
-返回 
-图层定义，与 addLayer相同
+返回 图层定义，与 addLayer相同
 
 ### setLayer
 > 重新定义图层，更新已有图层样式 
@@ -191,6 +277,7 @@ long 采样模式，见 setSampleMode
 | handle | String | 图层handle |
 
 ### removeAllLayers() 
+
 > 删除所有图层
 
 
@@ -236,10 +323,10 @@ long 采样模式，见 setSampleMode
     }
 }
 ```
-返回  
-要素 handle  
+返回要素 handle  
 
 ### findFeature(fid) 
+
 > 根据id 查找要素
 
 参数
@@ -249,19 +336,18 @@ long 采样模式，见 setSampleMode
 | fid | String | 要素fid |
 
 ### getFeature
+
 > 获得要素定义 
 
 | 参数 | 类型 | 说明 |
-参数 handle 要素句柄 
 | :---: | :---: | :---: |
-| handle | '--' |  要素handle |
-返回 
-string 
-要素定义， Json字符串，与 addFeature相同
+| handle | object |  要素handle |
+
+返回 string 要素定义， Json字符串，与 addFeature相同
 
 ### setFeature
-> 重新定义要素，更新已有要素 
 
+> 重新定义要素，更新已有要素 
 
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
@@ -270,6 +356,7 @@ string
 
 
 ### removeFeature(handle) 
+
 > 删除要素
 
 参数
@@ -279,14 +366,15 @@ string
 | handle | '' |  要素handle |
 
 
-### removeAllFeatures(hlayer) 
+### removeAllFeatures(layer) 
+
 > 删除指定图层的所有要素
 
 参数
 
 | 参数 | 类型 | 说明 |
 | :---: | :---: | :---: |
-| hlayer | 图层 handle |  图层handle |
+| layer | 图层 handle |  图层handle |
 
 ### selectFeature(handle) 
 > 选中要素，高亮显示
@@ -307,34 +395,3 @@ string
 | :---: | :---: | :---: |
 | handle | 图层或要素handle |  图层或要素 handle |
 | visible | 布尔 |  是否可见 |
-
-### getVersion()
-
-> 获取当前版本
-
-> example
-
-ppv.getVersion()
-
-### setPref(object)
-
-> 设置背景，可视范围，放大镜等工具参数
-
-参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| bgcolor | String |  背景颜色 |
-| fullView | 布尔 |  照片是否填满div，不管是否会被裁剪 |
-| enableArrow | 布尔 |  是否显示方向键 |
-| enableHistory | 布尔 |  是否允许历史帧 |
-| scope | number |  可视范围（米） |
-| magnifier | Object |  放大镜工具参数 |
-
-放大镜工具参数
-
-| 参数 | 类型 | 说明 |
-| :---: | :---: | :---: |
-| size | number |  放大镜矩形大小 |
-| zoom | number |  放大倍数 |
-| fix | 布尔 |  是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动 |

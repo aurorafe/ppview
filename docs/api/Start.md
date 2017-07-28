@@ -14,23 +14,27 @@ PPVision 客户端是基于 HTML5 技术的实景、全景组件，该控件可�
 
 ```html
 <script type="text/javascript" src="../dist/js/ppv.min.js"></script>
-<script type="text/javascript" src="../dist/js/jquery-1.12.3.min.js"></script>
-
-<div id="ppv"></div>
+<!--页面dom结构必须保证为下面所示-->
+<div id="ppv_container">
+  <div id="ppv">
+    <div id="history_container">
+    </div>
+    <div class="ppv_toolbar" id="ppv_toolbar">
+    </div>
+  </div>
+</div>
 
 <script>	
-//创建PPV对象
-var ppv = new PPV("ppv");
-//设置服务地址
-ppv.setServer("http://211.101.37.253:8013//PPVServer.asmx");
-//根据坐标定位当前实景
-function load(){
-	ppv.locate(3, 115.874498, 26.41398, 0);
-}
+  //创建PPV对象
+  var ppv = new PPV("ppv");
+  var key = '' // 用户key
+  //设置服务地址
+  ppv.setServer("http://211.101.37.253:8088/PPVServer.asmx");
+  //根据坐标定位当前实景
+  ppv.locate(3, 115.874498, 26.41398, key);
 </script>
 
 ```
-<body onload="load();">
-	<div id="ppv"></div>
-</body>
-##集成效果
+## 集成效果
+
+![点击查看](images/demo.png)
