@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>实景示例</title>
-  <link rel="stylesheet" href="./public/scripts/HMap/HMap.css" type="text/css">
+  <link rel="stylesheet" href="./public/scripts/HMap/HMap.min.css" type="text/css">
   <link rel="stylesheet" href="./public/scripts/Bootstrap/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="./index.css">
 </head>
@@ -96,39 +96,43 @@
 
   // 当前可以返回的帧
   var backID = '';
-
+  var userKey = "6MaPPMsBGdgxUqCVULFACSyXlnFENs7GaQSnJfin";
   var btBack = document.getElementById('btBack');
 
   // 初始化地图
   Maps.initMap('map', {
     controls: {
-      addScaleLine: false,
-      addLoading: false
+      geolocation: false,
+      scaleLine: true,
+      fullScreen: false,
+      mousePosition: false,
+      zoomSlider: true,
+      zoomToExtent: false,
+      loading: true
     },
     interactions: {
       doubleClickZoom: true,
       keyboard: false
     },
-    logo: {},
     view: {
-      center: [115.92466595234826, 27.428038204473552],
-      resolutions: resolutions,
-      fullExtent: [109.72859368643232, 24.010266905347684, 121.13105988819079, 30.76693489432357],
-      tileSize: 256,
-      origin: [-400, 399.9999999999998],
-      enableRotation: true, // 是否允许旋转
+      center: [108.95079717047562, 35.48836545260525],
+      extent: [58.70109358995266, 0.9022318996033198, 149.82711340940298, 56.069368099738966],
       projection: 'EPSG:4326',
-      rotation: 0,
-      zoom: 1, // resolution
-      zoomFactor: 2 // 用于约束分变率的缩放因子（高分辨率设备需要注意）
+      zoom: 5 // resolution
     },
+    logo: true,
     baseLayers: [  // 不传时默认加载OSM地图。
       {
-        layerName: 'vector',
+        layerName: 'tianditu',
         isDefault: true,
-        layerType: 'TileXYZ',
-        opaque: false, //图层是否不透明
-        layerUrl: 'http://111.75.200.54:6080/arcgis/rest/services/JXGS_FOUR/MapServer',
+        layerType: 'TitleWMTS',
+        layerUrl: 'http://t{0-6}.tianditu.com/vec_c/wmts',
+        matrixSet: 'c',
+        projection: 'EPSG:4326',
+        levels: 19,
+        layer: 'vec',
+        extent: [-180, -90, 180, 90],
+        format: 'tiles'
       }
     ]
   });
@@ -148,7 +152,7 @@
       var closestPoint = feature.getGeometry().getClosestPoint(coordinate);
       if (closestPoint) {
         console.log(closestPoint)
-        ppv.locate(3, closestPoint[0], closestPoint[1], 0);
+        ppv.locate(3, closestPoint[0], closestPoint[1], userKey);
         window.setTimeout(function () {
           ppv.step(-5)
         }, 200)
@@ -161,46 +165,41 @@
 
   // 添加实景所在路线
   function addLine () {
-    var line = lineData['data']['features'][1];
-    line['attributes']['style'] = {
-      stroke: {
-        strokeWidth: 4,
-        strokeColor: '#0000EE'
-      }
-    }
-    line['attributes']['selectStyle'] = {
-      stroke: {
-        strokeWidth: 6,
-        strokeColor: '#E52929'
-      }
-    }
-    var feat = Maps.addPolyline(line, {
-      layerName: 'line',
-      zoomToExtent: true
-    });
-
-    var point = {
-      attributes: {
-        ID: '02',
-        style: { // 自定义相关样式
-          icon: {
-            imageSrc: './public/icon/jiaodu.png'
-          }
+    axios.get('./data/gl_lx.json').then(function (response) {
+      var feat = Maps.addPolylines(response['data']['features'], {
+        layerName: 'line',
+        zoomToExtent: true,
+        selectable: true,
+        style: {
+        stroke: {
+          strokeWidth: 4,
+          strokeColor: '#7DC826'
         }
-      },
-      geometry: [115.87258481455471, 26.380662006921387],
-      geometryType: 'Point'
-    };
-    pointFeature = Maps.addPoint(point, {
-      layerName: 'eyeFeat'
-    });
+      }
+      });
+      var point = {
+        attributes: {
+          ID: '02',
+          style: { // 自定义相关样式
+            icon: {
+              imageSrc: './public/icon/icon_sp.png'
+            }
+          }
+        },
+        geometry: [115.87258481455471, 26.380662006921387],
+        geometryType: 'Point'
+      };
+      pointFeature = Maps.addPoint(point, {
+        layerName: 'eyeFeat'
+      });
 
-    var ptx, pty;
+      var ptx, pty;
 //    ptx = 115.87258481455471;
 //    pty = 26.380662006921387;
-    ptx = 115.49815476;
-    pty = 25.83325227;
-    initPano(ptx, pty)
+      ptx = 108.8414;
+      pty = 34.187878;
+      initPano(ptx, pty)
+    })
   }
 
   // 响应位置变化事件
@@ -377,14 +376,14 @@
   function initPano (ptx, pty) {
     ppv = new PPV("ppv");
     // 设置服务地址
-    ppv.setServer("http://220.176.42.102:8082//PPVServer.asmx");
-//    ppv.setServer("http://127.0.0.1:8082//PPVServer.asmx");
+//    ppv.setServer("http://220.176.42.102:8082//PPVServer.asmx");
+    ppv.setServer("http://211.101.37.253:8088/PPVServer.asmx");
 //    ppv.setServer("http://211.101.37.215:8013//PPVServer.asmx");
 
     // 采样模式定义
     ppv.setSampleMode(SampleMode.photo); // photo摄影法，ground地面采样模式
     // 根据坐标定位实景位置
-    ppv.locate(3, ptx, pty, 0);
+    ppv.locate(3, ptx, pty, userKey);
     // 监听定位事件
     ppv.onLocate = onLocate;
     // 响应位置变化事件
@@ -488,7 +487,7 @@
         ppv.setTool(Tool.remove, true);
         break;
       case 'switchPic':
-        ppv.locateByID(3, backID);
+        ppv.locateByID(3, backID, userKey);
         break
     }
   }
