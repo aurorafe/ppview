@@ -82,8 +82,10 @@
 <script src="./public/scripts/jquery/jquery.min.js"></script>
 <script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
-<script src="./public/scripts/HMap/HMap.js"></script>
-<script src="./public/scripts/PPV/js/ppv.min.js"></script>
+<script src="./public/scripts/HMap/HMap.min.js"></script>
+<!--<script src="./public/scripts/PPV/js/ppv.min.js"></script>-->
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../dist/PPV.js"></script>
 <script src="./public/scripts/axios/axios.min.js"></script>
 <script src="./mapConfig.js"></script>
 <script src="dataFile.js"></script>
@@ -403,7 +405,7 @@
 //    ppv.setServer("http://211.101.37.215:8013//PPVServer.asmx");
 
     // 采样模式定义
-    ppv.setSampleMode(SampleMode.photo); // photo摄影法，ground地面采样模式
+    ppv.setSampleMode(2); // photo摄影法，ground地面采样模式
     // 根据坐标定位实景位置
     ppv.locate(3, ptx, pty, userKey);
     // 监听定位事件
@@ -426,7 +428,7 @@
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
-      fullView: FullMode.clip, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
+      fullView: 3, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
       // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,

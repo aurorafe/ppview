@@ -2,37 +2,25 @@
  * Created by FDD on 2017/4/14.
  * @desc 实景三维核心代码
  */
-var Tool = {
-  none: 0,
-  measurePoint: 1,
-  measureLength: 2,
-  measureArea: 3,
-  measureZ: 4,
-  measureFacade: 5,
-  measureAngle: 6,
-  measureSlope: 7,
-  createPoint: 11,
-  createPolyline: 12,
-  createPolygon: 13,
-  caliplane: 14,
-  pick: 21,
-  remove: 22,
-  fullscreen: 23,
-  lrs: 24,
-  play: 31,
-  stop: 32,
-  next: 33,
-  prev: 34,
-  branch: 35,
-  back: 36,
-  history: 37
+import { Tool, FullMode, SampleMode, LocateState } from './baseConfig'
+import RotControl from './RotControl'
+import TextSprite from './TextSprite'
+$.postJSON = function (t, e, i, n) {
+  $.ajax({
+    type: "POST",
+    contentType: "application/json;charset=utf-8",
+    url: t,
+    data: JSON.stringify(e),
+    dataType: "json",
+    error: n,
+    success: i
+  })
 };
-var FullMode = {fill: 1, trans: 2, clip: 3, stretch: 4};
-var SampleMode = {none: 0, cloud: 1, photo: 2, ground: 3, plane: 4, object: 5, depth: 6};
-var LocateState = {success: 0, typeError: 1, dataError: 2, imageError: 3, busy: 4};
-var ControlType = {arrow: 0, history: 1};
-function PPV (t) {
+let Align = {center: 0, left: 1, right: 2};
+let Style = {stroke: 0, rect: 1};
+const PPV = function (t) {
   var e = this;
+  var control = null
   this.getVersion = function () {
     return "20170707"
   };
@@ -140,7 +128,7 @@ function PPV (t) {
   var mt = w + "ppv/icon/error-imaj.jpg";
   var vt = E.load(mt);
   rt(vt);
-  error_360_url = w + "ppv/icon/error-360.jpg";
+  var error_360_url = w + "ppv/icon/error-360.jpg";
   var gt = E.load(error_360_url);
   rt(gt);
   var yt = new THREE.Raycaster;
@@ -1266,7 +1254,7 @@ function PPV (t) {
     if (n == null)return;
     var r = [n.x + j.x, n.y + j.y, n.z + j.z];
     var a = G.inverse(r);
-    var o = "lon " + a[0].toFixed(8) + "° lat " + a[1].toFixed(8) + "° alt " + r[2].toFixed(2) + " m";
+    var o = "经度 " + a[0].toFixed(8) + "° 纬度 " + a[1].toFixed(8) + "° 高程 " + r[2].toFixed(2) + " m";
     var s = new TextSprite({text: o, offset: [0, Tt.label.fontsize * 1.2], style: Tt.label});
     s.position.copy(n);
     ee();
@@ -3497,3 +3485,4 @@ function PPV (t) {
 
   be()
 }
+export default PPV

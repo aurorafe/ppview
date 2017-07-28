@@ -66,6 +66,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "openlayers": "^4.2.0"
+    "openlayers": "^4.2.0",
+    "three": "^0.86.0"
   }
 }

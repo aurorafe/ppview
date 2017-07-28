@@ -11,7 +11,7 @@ const resolve = (dir) => {
 module.exports = {
   entry: './src/index.js',
   externals: {
-    'ol': 'openlayers'
+    'THREE': 'THREE'
   },
   output: {
     path: config.base.distDirectory,

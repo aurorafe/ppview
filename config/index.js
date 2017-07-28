@@ -13,7 +13,7 @@ module.exports = {
     cssSourceMap: true
   },
   base: {
-    libraryName: 'MeasureTool',
+    libraryName: 'PPV',
     distDirectory: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static'
   }
