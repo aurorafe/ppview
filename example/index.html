@@ -11,7 +11,7 @@
 <body>
 <div class="container-fluid">
   <div class="row">
-    <div class="alert alert-success alert-dismissible" role="alert">
+    <div style="display: none" class="alert alert-success alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
         aria-hidden="true">&times;</span></button>
       <strong>提示：</strong><span>统一设置参数，增加窗口自适应fullView模式（有保持全部数据可见，裁剪，镂空，拉伸）。增加缩略图预览，更新全部数据。
@@ -22,9 +22,9 @@
         <button type="button" class="btn btn-success my-button-add" onclick="addQLLayer()">叠加桥梁图层</button>
         <button type="button" class="btn btn-success my-button-add" onclick="addSDLayer()">叠加隧道图层</button>
         <button type="button" class="btn btn-success my-button-add" onclick="addQBLayer()">叠加情报板图层</button>
-        <button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>
+        <!--<button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>-->
         <button type="button" class="btn btn-success my-button-add" onclick="addJKLayer()">叠加监控设备图层</button>
-        <button type="button" class="btn btn-success my-button-add" onclick="addJDSSLayer()">叠加机电设施图层</button>
+        <!--<button type="button" class="btn btn-success my-button-add" onclick="addJDSSLayer()">叠加机电设施图层</button>-->
         <!--<button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>-->
         <!--<button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>-->
         <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
@@ -98,6 +98,7 @@
   var backID = '';
   var userKey = "6MaPPMsBGdgxUqCVULFACSyXlnFENs7GaQSnJfin";
   var btBack = document.getElementById('btBack');
+  var geosde = 'http://192.168.0.87:8081/geoserver-postgis-sx/rest/action/search'
 
   // 初始化地图
   Maps.initMap('map', {
@@ -163,6 +164,24 @@
   addLine();
   //  addKeyListener();
 
+  // 添加要素拖拽事件
+  function onFeatMoveEvent (event) {
+    var feature = event.value
+    var coordinate = event.originEvent.coordinate
+    if (feature) {
+      var layer = Maps.getLayerByLayerName('line')
+      if (layer) {
+        var LineFeature = layer.getSource().getClosestFeatureToCoordinate(coordinate)
+        var closestPoint = LineFeature.getGeometry().getClosestPoint(coordinate)
+        if (pointFeature) {
+          pointFeature.setGeometry(new ol.geom.Point(closestPoint))
+          Maps.movePointToView(closestPoint)
+          ppv.locate(3, closestPoint[0], closestPoint[1], userKey)
+        }
+      }
+    }
+  }
+
   // 添加实景所在路线
   function addLine () {
     axios.get('./data/gl_lx.json').then(function (response) {
@@ -190,8 +209,11 @@
         geometryType: 'Point'
       };
       pointFeature = Maps.addPoint(point, {
-        layerName: 'eyeFeat'
+        layerName: 'eyeFeat',
+        moveable: true
       });
+      pointFeature.un('mouseUpEvent', onFeatMoveEvent)
+      pointFeature.on('mouseUpEvent', onFeatMoveEvent)
 
       var ptx, pty;
 //    ptx = 115.87258481455471;
@@ -651,11 +673,11 @@
 
   // 叠加桥梁数据
   function addQLLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
-          layerName: 'GL_QIAO',
-          filter: 'SXXFX=1',
+          layerName: 'gl_qiao',
+          filter: 'sxxfx=1',
           isReturnGeometry: true
         })
       }
@@ -685,7 +707,7 @@
         var geoX = geo[1].slice(1, geo[1].length)
         var geoY = geo[2].slice(0, geo[2].length - 1)
         var __item = {
-          fid: item['attributes']['QLDM'],
+          fid: item['attributes']['qldm'],
           geometry: {
             coordinates: [geoX, geoY, 200.5938781674623],
             type: "Point"
@@ -694,7 +716,7 @@
             name: "test"
           },
           icon: icon,
-          name: item['attributes']['QLMC'],
+          name: item['attributes']['qlmc'],
           toGround: 0,
           type: "Feature"
         }
@@ -712,11 +734,11 @@
 
   // 叠加隧道数据
   function addSDLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
-          layerName: 'GL_SUID',
-          filter: 'SXXFX=1',
+          layerName: 'gl_suid',
+          filter: 'sxxfx=1',
           isReturnGeometry: true
         })
       }
@@ -745,13 +767,13 @@
           var geoX = geo[1].slice(1, geo[1].length)
           var geoY = geo[2].slice(0, geo[2].length - 1)
           var __item = {
-            fid: item['attributes']['SDDM'],
+            fid: item['attributes']['sdbm'],
             geometry: {
               coordinates: [geoX, geoY, 200.5938781674623],
               type: "Point"
             },
             icon: icon,
-            name: item['attributes']['SDMC'],
+            name: item['attributes']['sdmc'],
             toGround: 0,
             type: "Feature"
           }
@@ -769,11 +791,11 @@
 
   // 叠加情报板数据
   function addQBLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
-          layerName: 'GL_JDSS_QBB',
-          filter: 'SXXFX=1',
+          layerName: 'gl_kbqbb',
+          filter: 'sxxfx=1',
           isReturnGeometry: true
         })
       }
@@ -802,13 +824,13 @@
           var geoX = geo[1].slice(1, geo[1].length)
           var geoY = geo[2].slice(0, geo[2].length - 1)
           var __item = {
-            fid: item['attributes']['EQUIPMENT_CODE'],
+            fid: item['attributes']['id'],
             geometry: {
               coordinates: [geoX, geoY, 200.5938781674623],
               type: "Point"
             },
             icon: icon,
-            name: item['attributes']['EQUIPMENT_NAME'],
+            name: '可变情报板',
             toGround: 0,
             type: "Feature"
           }
@@ -827,7 +849,7 @@
 
   // 叠加气象站数据
   function addQXLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
           layerName: 'GL_JDSS_QXZ',
@@ -884,11 +906,11 @@
 
   // 叠加监控设备数据
   function addJKLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
-          layerName: 'GL_JDSS_JKSS',
-          filter: 'SXXFX=1',
+          layerName: 'gl_jksssb',
+          filter: 'sxxfx=1',
           isReturnGeometry: true
         })
       }
@@ -917,13 +939,13 @@
           var geoX = geo[1].slice(1, geo[1].length)
           var geoY = geo[2].slice(0, geo[2].length - 1)
           var __item = {
-            fid: item['attributes']['EQUIPMENT_CODE'],
+            fid: item['attributes']['id'],
             geometry: {
               coordinates: [geoX, geoY, 200.5938781674623],
               type: "Point"
             },
             icon: icon,
-            name: item['attributes']['EQUIPMENT_NAME'],
+            name: '监控设备',
             toGround: 0,
             type: "Feature"
           }
@@ -941,7 +963,7 @@
 
   // 叠加机电设施数据
   function addJDSSLayer () {
-    axios.get('http://211.101.37.253:8081/geoserver-sde/rest/action/search', {
+    axios.get(geosde, {
       params: {
         params: JSON.stringify({
           layerName: 'GL_LD_JDSS',
