@@ -8,3 +8,5 @@ test/e2e/reports
 selenium-debug.log
 docs/node_modules/
 docs/_book/
+/package-lock.json
+/docs/package-lock.json
