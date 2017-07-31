@@ -2,19 +2,20 @@
  * Created by FDD on 2017/4/14.
  * @desc 实景三维核心代码
  */
+
 import './polyfill/assign'
 import {Tool, FullMode, SampleMode, LocateState} from './baseConfig'
 import RotControl from './RotControl'
 import TextSprite from './TextSprite'
 import * as ajaxUtils from './ajaxUtils'
+import * as Events from './Events'
 const PPV = function (t) {
   var e = this;
   var control = null
   this.getVersion = function () {
     return "20170707"
   };
-  console.log("ppv:" + e.getVersion());
-  var i = $("#" + t);
+  var i = document.getElementById(t);
   var n = document.getElementById(t);
   var r;
   var a = "";
@@ -2262,13 +2263,13 @@ const PPV = function (t) {
     A.setClearColor(Tt.bgcolor, 0);
     A.setPixelRatio(window.devicePixelRatio);
     n.appendChild(A.domElement);
-    i.bind("contextmenu", Le);
-    i.bind("touchstart", Pe);
-    i.bind("mousedown", ze);
-    i.bind("mouseup", De);
-    i.bind("mousemove", Ue);
-    i.bind("mousewheel", Oe);
-    $(window).bind("keydown", Ae);
+    Events.listen(i, 'contextmenu', Le, this)
+    Events.listen(i, 'touchstart', Pe, this)
+    Events.listen(i, 'mousedown', ze, this)
+    Events.listen(i, 'mouseup', De, this)
+    Events.listen(i, 'mousemove', Ue, this)
+    Events.listen(i, 'mousewheel', Oe, this)
+    Events.listen(document, 'keydown', Ae, this)
     Me()
   }
 
@@ -2907,7 +2908,7 @@ const PPV = function (t) {
       u = false;
       return
     }
-    var r = $.parseJSON(t);
+    var r = JSON.parse(t);
     if (r == null) {
       var n = {state: LocateState.dataError};
       e.onLocate(n);
@@ -3175,7 +3176,7 @@ const PPV = function (t) {
       u = false;
       return
     }
-    var r = $.parseJSON(t);
+    var r = JSON.parse(t);
     if (r == null) {
       var n = {state: LocateState.dataError};
       e.onLocate(n);
@@ -3206,7 +3207,7 @@ const PPV = function (t) {
       u = false;
       return
     }
-    var r = $.parseJSON(t);
+    var r = JSON.parse(t);
     if (r == null) {
       var n = {state: LocateState.dataError};
       e.onLocate(n);
@@ -3238,7 +3239,7 @@ const PPV = function (t) {
       u = false;
       return
     }
-    var r = $.parseJSON(t);
+    var r = JSON.parse(t);
     if (r == null) {
       var n = {state: LocateState.dataError};
       e.onLocate(n);
