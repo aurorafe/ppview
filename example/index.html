@@ -192,11 +192,11 @@
         zoomToExtent: true,
         selectable: true,
         style: {
-        stroke: {
-          strokeWidth: 4,
-          strokeColor: '#7DC826'
+          stroke: {
+            strokeWidth: 4,
+            strokeColor: '#7DC826'
+          }
         }
-      }
       });
       var point = {
         attributes: {
@@ -424,7 +424,6 @@
     ppv.onMeasure = onMeasure;
     // 监听工具切换事件,功能改变时，触发事件
     ppv.onTool = onTool;
-
     // 设置背景，可视范围，放大镜等工具参数
     ppv.setPref({
       bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',

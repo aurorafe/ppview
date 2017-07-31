@@ -2,7 +2,7 @@
  * Created by FDD on 2017/7/28.
  * @desc baseConfig
  */
-export const Tool = {
+export const Tool = { // 相关工具
   none: 0,
   measurePoint: 1,
   measureLength: 2,
@@ -27,8 +27,30 @@ export const Tool = {
   back: 36,
   history: 37
 };
-export const FullMode = {fill: 1, trans: 2, clip: 3, stretch: 4};
-export const SampleMode = {none: 0, cloud: 1, photo: 2, ground: 3, plane: 4, object: 5, depth: 6};
-export const LocateState = {success: 0, typeError: 1, dataError: 2, imageError: 3, busy: 4};
-export const ControlType = {arrow: 0, history: 1};
+export const FullMode = { // 全屏模式
+  fill: 1,
+  trans: 2,
+  clip: 3,
+  stretch: 4
+};
+export const SampleMode = { // 采样模式
+  none: 0,
+  cloud: 1,
+  photo: 2,
+  ground: 3,
+  plane: 4,
+  object: 5,
+  depth: 6
+};
+export const LocateState = { // 加载标识
+  success: 0,
+  typeError: 1,
+  dataError: 2,
+  imageError: 3,
+  busy: 4
+};
+export const ControlType = { // 控制类型
+  arrow: 0,
+  history: 1
+};
 window.Tool = Tool

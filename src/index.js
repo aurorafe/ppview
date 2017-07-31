@@ -16,8 +16,6 @@ $.postJSON = function (t, e, i, n) {
     success: i
   })
 };
-let Align = {center: 0, left: 1, right: 2};
-let Style = {stroke: 0, rect: 1};
 const PPV = function (t) {
   var e = this;
   var control = null
