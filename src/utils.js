@@ -2,12 +2,12 @@
  * Created by FDD on 2017/7/31.
  * @desc 工具类
  */
-
+import URLSearchParams from 'url-search-params'
 /**
  * 合并对象
  * @returns {{}}
  */
-const merge = (/* obj1, obj2, obj3, ... */) => {
+export const merge = (/* obj1, obj2, obj3, ... */) => {
   let result = {}
   function assignValue(val, key) {
     if (typeof result[key] === 'object' && typeof val === 'object') {
@@ -22,10 +22,24 @@ const merge = (/* obj1, obj2, obj3, ... */) => {
   return result
 }
 /**
+ * 转换查询数据
+ * @param data
+ * @param headers
+ * @param fns
+ * @returns {*}
+ */
+export const transformData = (data, headers, fns) => {
+  /*eslint no-param-reassign:0*/
+  forEach(fns, function transform(fn) {
+    data = fn(data, headers)
+  })
+  return data
+}
+/**
  * 构造trim方法
  * @param str
  */
-const trim = (str) => {
+export const trim = (str) => {
   return str.replace(/^\s*/, '').replace(/\s*$/, '')
 }
 /**

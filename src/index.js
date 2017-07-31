@@ -2,20 +2,11 @@
  * Created by FDD on 2017/4/14.
  * @desc 实景三维核心代码
  */
-import { Tool, FullMode, SampleMode, LocateState } from './baseConfig'
+import './polyfill/assign'
+import {Tool, FullMode, SampleMode, LocateState} from './baseConfig'
 import RotControl from './RotControl'
 import TextSprite from './TextSprite'
-$.postJSON = function (t, e, i, n) {
-  $.ajax({
-    type: "POST",
-    contentType: "application/json;charset=utf-8",
-    url: t,
-    data: JSON.stringify(e),
-    dataType: "json",
-    error: n,
-    success: i
-  })
-};
+import * as ajaxUtils from './ajaxUtils'
 const PPV = function (t) {
   var e = this;
   var control = null
@@ -258,40 +249,67 @@ const PPV = function (t) {
     Be();
     o = t;
     switch (o) {
-      case-1: {
-        var h = 50;
-        var c = 15;
-        $.get(w + "ppv/php/locate.php", {lon: e, lat: i, tol: h, angle: c}, function (t) {
-          qe(t, true)
+      case -1:
+        let [h, c] = [50, 15]
+        ajaxUtils.get(w + 'ppv/php/locate.php', {
+          lon: e,
+          lat: i,
+          tol: h,
+          angle: c
+        }).then(res => {
+          qe(res, true)
         })
-      }
-        break;
-      case 0: {
-        $.postJSON(a + "/GetBranchByCoord", {type: o, x: e, y: i, key: r}, function (t) {
-          je(t.d, true)
-        }, function t (e, i) {
+        break
+      case 0:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          je(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
-        break;
-      case 3: {
-        $.postJSON(a + "/GetBranchByCoord", {type: o, x: e, y: i, key: r}, function (t) {
-          Xe(t.d, true)
-        }, function t (e, i) {
+        break
+      case 3:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          Xe(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
-        break;
-      case 4: {
-        $.postJSON(a + "/GetBranchByCoord", {type: o, x: e, y: i, key: r}, function (t) {
-          Ye(t.d, true)
-        }, function t (e, i) {
+        break
+      case 4:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          Ye(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
         break
     }
-  };
+  }
   this.locateByID = function (t, e, i) {
     r = i;
     if (u) {
@@ -303,40 +321,63 @@ const PPV = function (t) {
     Be();
     o = t;
     switch (o) {
-      case-1: {
-        var s = 50;
-        var h = 15;
-        $.get(w + "ppv/php/locate_by_id.php", {id: e, tol: s, angle: h}, function (t) {
-          qe(t, true)
+      case -1:
+        let [s, h] = [50, 15]
+        ajaxUtils.get(w + 'ppv/php/locate_by_id.php', {
+          id: e,
+          tol: s,
+          angle: h
+        }).then(res => {
+          qe(res, true)
         })
-      }
-        break;
-      case 0: {
-        $.postJSON(a + "/GetBranchByID", {type: o, id: e, step: 1, key: r}, function (t) {
-          je(t.d, true)
-        }, function t (e, i) {
+        break
+      case 0:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          je(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
-        break;
-      case 3: {
-        $.postJSON(a + "/GetBranchByID", {type: o, id: e, step: 1, key: r}, function (t) {
-          Xe(t.d, true)
-        }, function t (e, i) {
+        break
+      case 3:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          Xe(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
-        break;
-      case 4: {
-        $.postJSON(a + "/GetBranchByID", {type: o, id: e, step: 1, key: r}, function (t) {
-          Ye(t.d, true)
-        }, function t (e, i) {
+        break
+      case 4:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          Ye(res.d, true)
+        }).catch(error => {
+          console.warn(error)
           u = false
         })
-      }
         break
     }
-  };
+  }
   function St (t, e) {
     if (u) {
       return
@@ -345,37 +386,60 @@ const PPV = function (t) {
     Be();
     setTimeout(function () {
       switch (o) {
-        case-1: {
-          var e = 50;
-          var i = 15;
-          $.get(w + "ppv/php/locate_by_id.php", {id: t, tol: e, angle: i}, function (t) {
-            qe(t)
+        case -1:
+          let [e, i] = [50, 15]
+          ajaxUtils.get(w + 'ppv/php/locate_by_id.php', {
+            id: t,
+            tol: e,
+            angle: i
+          }).then(res => {
+            qe(res, true)
           })
-        }
-          break;
-        case 0: {
-          $.postJSON(a + "/GetBranchByID", {type: o, id: t, step: 1, key: r}, function (t) {
-            je(t.d)
-          }, function t (e, i) {
+          break
+        case 0:
+          ajaxUtils.post(a + '/GetBranchByID', {
+            data: {
+              type: o,
+              id: t,
+              step: 1,
+              key: r
+            }
+          }).then(res => {
+            je(res.d, true)
+          }).catch(error => {
+            console.warn(error)
             u = false
           })
-        }
-          break;
-        case 3: {
-          $.postJSON(a + "/GetBranchByID", {type: o, id: t, step: 1, key: r}, function (t) {
-            Xe(t.d)
-          }, function t (e, i) {
+          break
+        case 3:
+          ajaxUtils.post(a + '/GetBranchByID', {
+            data: {
+              type: o,
+              id: t,
+              step: 1,
+              key: r
+            }
+          }).then(res => {
+            Xe(res.d, true)
+          }).catch(error => {
+            console.warn(error)
             u = false
           })
-        }
-          break;
-        case 4: {
-          $.postJSON(a + "/GetBranchByID", {type: o, id: t, step: 1, key: r}, function (t) {
-            Ye(t.d)
-          }, function t (e, i) {
+          break
+        case 4:
+          ajaxUtils.post(a + '/GetBranchByID', {
+            data: {
+              type: o,
+              id: t,
+              step: 1,
+              key: r
+            }
+          }).then(res => {
+            Ye(res.d, true)
+          }).catch(error => {
+            console.warn(error)
             u = false
           })
-        }
           break
       }
     }, 100)

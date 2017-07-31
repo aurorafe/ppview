@@ -3,6 +3,12 @@
  * @desc 请求结构
  */
 import * as utils from './utils'
+
+/**
+ * 编码
+ * @param val
+ * @returns {string}
+ */
 export const encode = (val) => {
   return encodeURIComponent(val).
   replace(/%40/gi, '@').
@@ -14,6 +20,10 @@ export const encode = (val) => {
   replace(/%5D/gi, ']');
 }
 
+/**
+ * creat req
+ * @returns {*}
+ */
 export const createXMLHttpRequest = function () {
   let xhr = null
   if (window.XMLHttpRequest) {
@@ -30,7 +40,13 @@ export const createXMLHttpRequest = function () {
   }
   return xhr
 }
-
+/**
+ * 格式化url
+ * @param url
+ * @param params
+ * @param paramsSerializer
+ * @returns {*}
+ */
 export const buildURL = (url, params, paramsSerializer) => {
   /*eslint no-param-reassign:0*/
   if (!params) {
@@ -75,15 +91,21 @@ export const buildURL = (url, params, paramsSerializer) => {
  * @param url
  * @returns {Promise}
  */
-export const get = (url) => {
+export const get = (url, params) => {
   let xhr = createXMLHttpRequest()
   return new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        resolve(xhr.responseText)
-      } else {
-        reject('error')
+        resolve(JSON.parse(xhr.responseText || request.response))
       }
+    }
+    xhr.onerror = () => {
+      reject('Network Error')
+      xhr = null
+    }
+    xhr.ontimeout = () => {
+      reject('timeout')
+      xhr = null
     }
     xhr.open('GET', url, true)
     xhr.send(null)
@@ -101,15 +123,26 @@ export const post = (url, params) => {
   return new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        resolve(xhr.responseText)
-      } else {
-        reject('error')
+        resolve(JSON.parse(xhr.responseText || request.response))
       }
     }
-    xhr.setRequestHeader('cache-control', 'no-cache');
-    xhr.setRequestHeader('contentType', 'text/html;charset=uft-8') // 指定发送的编码
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;');  // 设置请求头信息
+    xhr.onerror = () => {
+      reject('Network Error')
+      xhr = null
+    }
+    xhr.ontimeout = () => {
+      reject('timeout')
+      xhr = null
+    }
     xhr.open('POST', url, true)
-    xhr.send(null)
+    let _headers = Object.assign((params['header'] || {}), {
+      "Content-Type": "application/json;charset=UTF-8"
+    })
+    for (let key in _headers) {
+      if (key && _headers[key]) {
+        xhr.setRequestHeader(key, _headers[key])
+      }
+    }
+    xhr.send(JSON.stringify(params['data']))
   })
 }
