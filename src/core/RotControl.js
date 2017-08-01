@@ -2,7 +2,7 @@
  * Created by FDD on 2017/7/28.
  * @desc RotControl
  */
-import * as Events from './Events'
+import * as Events from '../events/Events'
 const RotControl = function (PerspectiveCamera, element) {
   this.PerspectiveCamera = PerspectiveCamera
   this.element = element

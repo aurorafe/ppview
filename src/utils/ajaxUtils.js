@@ -135,9 +135,9 @@ export const post = (url, params) => {
       xhr = null
     }
     xhr.open('POST', url, true)
-    let _headers = Object.assign((params['header'] || {}), {
+    let _headers = Object.assign({
       "Content-Type": "application/json;charset=UTF-8"
-    })
+    }, (params['header'] || {}))
     for (let key in _headers) {
       if (key && _headers[key]) {
         xhr.setRequestHeader(key, _headers[key])

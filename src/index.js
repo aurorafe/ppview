@@ -4,11 +4,11 @@
  */
 
 import './polyfill/assign'
-import {Tool, FullMode, SampleMode, LocateState} from './baseConfig'
-import RotControl from './RotControl'
-import TextSprite from './TextSprite'
-import * as ajaxUtils from './ajaxUtils'
-import * as Events from './Events'
+import {Tool, FullMode, SampleMode, LocateState} from './config/baseConfig'
+import RotControl from './core/RotControl'
+import TextSprite from './core/TextSprite'
+import * as ajaxUtils from './utils/ajaxUtils'
+import * as Events from './events/Events'
 const PPV = function (t) {
   var e = this;
   var control = null
