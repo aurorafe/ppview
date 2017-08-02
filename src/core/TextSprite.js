@@ -1,6 +1,6 @@
 /**
  * Created by FDD on 2017/7/28.
- * @desc TextSprite
+ * @desc 文字label和边框样式
  */
 import {defaultPref} from '../config/baseConfig'
 import isNumber from 'lodash/isNumber'
@@ -61,6 +61,9 @@ class TextSprite extends (THREE.Object3D) {
     this.update()
   }
 
+  /**
+   * 更新当前label样式
+   */
   update () {
     var t = this.style.fontsize + "px " + this.style.fontface;
     var e = document.createElement("canvas");
@@ -103,6 +106,15 @@ class TextSprite extends (THREE.Object3D) {
     this.sprite.position.set(p, 0, d)
   }
 
+  /**
+   * 画矩形边框
+   * @param t
+   * @param e
+   * @param i
+   * @param n
+   * @param r
+   * @param a
+   */
   roundRect (t, e, i, n, r, a) {
     n--;
     t.beginPath();

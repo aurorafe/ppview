@@ -13,7 +13,7 @@ module.exports = {
     cssSourceMap: true
   },
   base: {
-    libraryName: 'PPV',
+    libraryName: 'Panorama',
     distDirectory: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static'
   }

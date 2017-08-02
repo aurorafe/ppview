@@ -5,17 +5,20 @@
   <title>Title</title>
 </head>
 <body>
+<div id="pano"></div>
+<script src="../node_modules/three/build/three.js"></script>
+<script type="text/javascript" src="../dist/Panorama.js"></script>
 <script type="text/javascript">
-  var test = Object.assign({
-    "Content-Type": {
-      value: "application/json;charset=UTF-8"
-    }
-  }, {
-    "Content-Type": {
-      flag: '"application/json;charset=UTF-16"'
-    }
+  var pano = new Panorama('pano', {})
+  console.log(pano)
+  pano.on('click', function (event) {
+    console.log(event)
   })
-  console.log(test)
+  window.setTimeout(function () {
+    pano.dispatch('click', {
+      value: '100'
+    })
+  }, 2000)
 </script>
 </body>
 </html>
