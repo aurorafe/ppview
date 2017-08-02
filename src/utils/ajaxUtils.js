@@ -10,14 +10,14 @@ import * as utils from './utils'
  * @returns {string}
  */
 export const encode = (val) => {
-  return encodeURIComponent(val).
-  replace(/%40/gi, '@').
-  replace(/%3A/gi, ':').
-  replace(/%24/g, '$').
-  replace(/%2C/gi, ',').
-  replace(/%20/g, '+').
-  replace(/%5B/gi, '[').
-  replace(/%5D/gi, ']');
+  return encodeURIComponent(val)
+    .replace(/%40/gi, '@')
+    .replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']')
 }
 
 /**
@@ -30,9 +30,9 @@ export const createXMLHttpRequest = function () {
     xhr = new XMLHttpRequest()
   } else if (window.ActiveXObject) {
     try {
-      xhr = new ActiveXObject('Msxml2.XMLHTTP')
+      xhr = new window.ActiveXObject('Msxml2.XMLHTTP')
     } catch (e) {
-      xhr = new ActiveXObject('Microsoft.XMLHTTP')
+      xhr = new window.ActiveXObject('Microsoft.XMLHTTP')
     }
   } else {
     this.container.textContent = 'XHR is not supported, update your browser!'
@@ -48,7 +48,7 @@ export const createXMLHttpRequest = function () {
  * @returns {*}
  */
 export const buildURL = (url, params, paramsSerializer) => {
-  /*eslint no-param-reassign:0*/
+  /* eslint no-param-reassign:0 */
   if (!params) {
     return url
   }
@@ -59,7 +59,7 @@ export const buildURL = (url, params, paramsSerializer) => {
     serializedParams = params.toString()
   } else {
     let parts = []
-    utils.forEach(params, function serialize(val, key) {
+    utils.forEach(params, function serialize (val, key) {
       if (val === null || typeof val === 'undefined') {
         return
       }
@@ -69,14 +69,14 @@ export const buildURL = (url, params, paramsSerializer) => {
       if (!Array.isArray(val)) {
         val = [val]
       }
-      utils.forEach(val, function parseValue(v) {
+      utils.forEach(val, function parseValue (v) {
         if (utils.isDate(v)) {
-          v = v.toISOString();
+          v = v.toISOString()
         } else if (utils.isObject(v)) {
-          v = JSON.stringify(v);
+          v = JSON.stringify(v)
         }
-        parts.push(encode(key) + '=' + encode(v));
-      });
+        parts.push(encode(key) + '=' + encode(v))
+      })
     })
     serializedParams = parts.join('&')
   }
@@ -96,7 +96,7 @@ export const get = (url, params) => {
   return new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        resolve(JSON.parse(xhr.responseText || request.response))
+        resolve(JSON.parse(xhr.responseText || xhr.response))
       }
     }
     xhr.onerror = () => {
@@ -123,7 +123,7 @@ export const post = (url, params) => {
   return new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4 && xhr.status === 200) {
-        resolve(JSON.parse(xhr.responseText || request.response))
+        resolve(JSON.parse(xhr.responseText || xhr.response))
       }
     }
     xhr.onerror = () => {
@@ -136,7 +136,7 @@ export const post = (url, params) => {
     }
     xhr.open('POST', url, true)
     let _headers = Object.assign({
-      "Content-Type": "application/json;charset=UTF-8"
+      'Content-Type': 'application/json;charset=UTF-8'
     }, (params['header'] || {}))
     for (let key in _headers) {
       if (key && _headers[key]) {

@@ -54,12 +54,12 @@ export const ControlType = { // 控制类型
   history: 1
 }
 export const defaultPref = {
-  bgcolor: 0,
+  backgroundColor: 0,
   fullView: FullMode.fill,
   enableArrow: true,
   enableHistory: true,
   scope: 100,
-  thumb: "Middle",
+  thumb: 'Middle',
   magnifier: {
     size: 256,
     zoom: 5,
@@ -80,13 +80,16 @@ export const defaultPref = {
     fullscreen: 120
   },
   label: {
-    fontface: "微软雅黑",
-    fontsize: 15,
-    textColor: "#000000",
-    borderThickness: 1,
-    borderFillet: 6,
-    borderColor: "rgba(0,0,0,0.8)",
-    backgroundColor: "rgba(255,255,255,0.8)"
+    fontFamily: '微软雅黑',
+    fontSize: 15,
+    textColor: '#000000',
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)'
   }
+}
+export const eventName = {
+  LOCATE: 'LOCATE'
 }
 window.Tool = Tool

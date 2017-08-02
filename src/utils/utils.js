@@ -9,7 +9,7 @@ import URLSearchParams from 'url-search-params'
  */
 export const merge = (/* obj1, obj2, obj3, ... */) => {
   let result = {}
-  function assignValue(val, key) {
+  function assignValue (val, key) {
     if (typeof result[key] === 'object' && typeof val === 'object') {
       result[key] = merge(result[key], val)
     } else {
@@ -29,8 +29,8 @@ export const merge = (/* obj1, obj2, obj3, ... */) => {
  * @returns {*}
  */
 export const transformData = (data, headers, fns) => {
-  /*eslint no-param-reassign:0*/
-  forEach(fns, function transform(fn) {
+  /* eslint no-param-reassign:0 */
+  forEach(fns, function transform (fn) {
     data = fn(data, headers)
   })
   return data
@@ -52,16 +52,18 @@ export const forEach = (obj, fn) => {
     return
   }
   if (typeof obj !== 'object' && !Array.isArray(obj)) {
-    /*eslint no-param-reassign:0*/
+    /* eslint no-param-reassign:0 */
     obj = [obj]
   }
   if (Array.isArray(obj)) {
-    for (var i = 0, l = obj.length; i < l; i++) {
+    for (let i = 0, l = obj.length; i < l; i++) {
+      /* eslint no-useless-call: 0 */
       fn.call(null, obj[i], i, obj)
     }
   } else {
     for (let key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        /* eslint no-useless-call: 0 */
         fn.call(null, obj[key], key, obj)
       }
     }
@@ -83,9 +85,34 @@ export const isDate = (val) => {
  * @returns {boolean}
  */
 export const isObject = (val) => {
-  return val !== null && typeof val === 'object';
+  return val !== null && typeof val === 'object'
 }
 
 export const isURLSearchParams = (val) => {
-  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams
+}
+
+/**
+ * 获取静态资源相对路径
+ * @returns {string}
+ */
+export const getRelativePath = () => {
+  let [scripts, path] = [document.scripts, '']
+  scripts = Array.prototype.slice.call(scripts, 0)
+  if (scripts && scripts.length > 0) {
+    scripts.every(scr => {
+      if (scr['src']) {
+        let index_ = scr['src'].toLowerCase().indexOf('panorama.')
+        if (index_ >= 0) {
+          path = scr['src'].substring(0, index_)
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    })
+  }
+  return path
 }

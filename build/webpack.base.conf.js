@@ -26,7 +26,8 @@ module.exports = {
         test: /(\.jsx|\.js)$/,
         enforce: 'pre',  // 在babel-loader对源码进行编译前进行lint的检查
         loaders: [
-          'babel-loader'
+          'babel-loader',
+          'eslint-loader'
         ],
         exclude: /(node_modules|bower_components)/
       },

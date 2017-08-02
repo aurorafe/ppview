@@ -10,7 +10,11 @@
 <script type="text/javascript" src="../dist/Panorama.js"></script>
 <script type="text/javascript">
   var pano = new Panorama('pano', {})
-  console.log(pano)
+  console.log(pano.getVersion())
+  var label = pano.setPref()
+  document.write('<img src="' + pano.imagesSrc +'">')
+  console.log(pano.imagesSrc)
+  console.log(label)
   pano.on('click', function (event) {
     console.log(event)
   })

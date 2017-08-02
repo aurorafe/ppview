@@ -19,6 +19,7 @@ module.exports = {
     "node": true
   },
   "globals": {
+    "THREE": true,
     "document": true,
     "Object": true,
     "escape": false,

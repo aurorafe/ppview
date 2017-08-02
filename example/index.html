@@ -17,46 +17,51 @@
       <strong>提示：</strong><span>统一设置参数，增加窗口自适应fullView模式（有保持全部数据可见，裁剪，镂空，拉伸）。增加缩略图预览，更新全部数据。
     </span>
     </div>
-    <div class="col-md-6 map-content" id="map">
-      <div class="user-tool">
-        <button type="button" class="btn btn-success my-button-add" onclick="addQLLayer()">叠加桥梁图层</button>
-        <button type="button" class="btn btn-success my-button-add" onclick="addSDLayer()">叠加隧道图层</button>
-        <button type="button" class="btn btn-success my-button-add" onclick="addQBLayer()">叠加情报板图层</button>
-        <!--<button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>-->
-        <button type="button" class="btn btn-success my-button-add" onclick="addJKLayer()">叠加监控设备图层</button>
-        <!--<button type="button" class="btn btn-success my-button-add" onclick="addJDSSLayer()">叠加机电设施图层</button>-->
-        <!--<button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>-->
-        <!--<button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>-->
-        <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
+    <div id="left-content">
+      <div class="col-md-12 map-content" id="map">
+        <div class="user-tool">
+          <button type="button" class="btn btn-success my-button-add" onclick="addQLLayer()">叠加桥梁图层</button>
+          <button type="button" class="btn btn-success my-button-add" onclick="addSDLayer()">叠加隧道图层</button>
+          <button type="button" class="btn btn-success my-button-add" onclick="addQBLayer()">叠加情报板图层</button>
+          <!--<button type="button" class="btn btn-success my-button-add" onclick="addQXLayer()">叠加气象站图层</button>-->
+          <button type="button" class="btn btn-success my-button-add" onclick="addJKLayer()">叠加监控设备图层</button>
+          <!--<button type="button" class="btn btn-success my-button-add" onclick="addJDSSLayer()">叠加机电设施图层</button>-->
+          <!--<button type="button" class="btn btn-success my-button-addMuch-230" onclick="addMuchPoints()">叠加大量点230</button>-->
+          <!--<button type="button" class="btn btn-success my-button-addMuch-1000" onclick="testMuchPoints()">叠加大量点1000</button>-->
+          <button type="button" class="btn btn-info my-button-rm" onclick="removePointLayer()">移除叠加点图层</button>
+          <button type="button" class="btn btn-info my-button-rm" onclick="switchContent()">交换容器</button>
+        </div>
       </div>
     </div>
-    <div id="ppv_container" class="col-md-6 pano-content">
-      <div id="ppv">
-        <div class="ppv_toolbar">
-          <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
-               onclick="activeTool(event, 'measurePoint')"/>
-          <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度"
-               onclick="activeTool(event, 'measureLength')"/>
-          <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
-               onclick="activeTool(event, 'measureArea')"/>
-          <img class="ppv_button" src="public/icon/measureheigth.png" title="测量高度"
-               onclick="activeTool(event, 'measureZ')"/>
-          <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
-               onclick="activeTool(event, 'measureAngle')"/>
-          <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
-               onclick="activeTool(event, 'measureSlope')"/>
-          <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
-               onclick="activeTool(event, 'createPoint')"/>
-          <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"
-               onclick="activeTool(event, 'pick')"/>
-          <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
-               onclick="activeTool(event, 'remove')"/>
-          <img id="btBack" class="ppv_button" src="public/icon/back.png" title="上下行"
-               onclick="activeTool(event, 'switchPic')"/>
-          <!--<img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>-->
-          <div class="play-button">
-            <img class="ppv_button play" onclick="play(event)" src="public/icon/play.png" title="播放"></img>
-            <img class="ppv_button stop" onclick="stop(event)" src="public/icon/stop.png" title="暂停"></img>
+    <div id="right-content">
+      <div id="ppv_container" class="col-md-12 pano-content">
+        <div id="ppv">
+          <div class="ppv_toolbar">
+            <img class="ppv_button" src="public/icon/searchCoor.png" title="查询坐标"
+                 onclick="activeTool(event, 'measurePoint')"/>
+            <img class="ppv_button" src="public/icon/measureLength.png" title="测量长度"
+                 onclick="activeTool(event, 'measureLength')"/>
+            <img class="ppv_button" src="public/icon/measureArea.png" title="测量面积"
+                 onclick="activeTool(event, 'measureArea')"/>
+            <img class="ppv_button" src="public/icon/measureheigth.png" title="测量高度"
+                 onclick="activeTool(event, 'measureZ')"/>
+            <img class="ppv_button" src="public/icon/measurejiaodu.png" title="测量角度"
+                 onclick="activeTool(event, 'measureAngle')"/>
+            <img class="ppv_button" src="public/icon/measurepodu.png" title="测量坡度"
+                 onclick="activeTool(event, 'measureSlope')"/>
+            <img class="ppv_button" src="public/icon/creatPoint.png" title="创建点"
+                 onclick="activeTool(event, 'createPoint')"/>
+            <img class="ppv_button" src="public/icon/selObject.png" title="选择对象"
+                 onclick="activeTool(event, 'pick')"/>
+            <img class="ppv_button" src="public/icon/delObject.png" title="删除选中对象"
+                 onclick="activeTool(event, 'remove')"/>
+            <img id="btBack" class="ppv_button" src="public/icon/back.png" title="上下行"
+                 onclick="activeTool(event, 'switchPic')"/>
+            <!--<img class="ppv_button" src="public/icon/LRS.png" title="线性参考系"></img>-->
+            <div class="play-button">
+              <img class="ppv_button play" onclick="play(event)" src="public/icon/play.png" title="播放"></img>
+              <img class="ppv_button stop" onclick="stop(event)" src="public/icon/stop.png" title="暂停"></img>
+            </div>
           </div>
         </div>
       </div>
@@ -85,7 +90,7 @@
 <script src="./public/scripts/HMap/HMap.min.js"></script>
 <!--<script src="./public/scripts/PPV/js/ppv.min.js"></script>-->
 <script src="../node_modules/three/build/three.js"></script>
-<script src="../dist/PPV.js"></script>
+<script src="./public/scripts/PPV/js/ppv.min.js"></script>
 <script src="./public/scripts/axios/axios.min.js"></script>
 <script src="./mapConfig.js"></script>
 <script src="dataFile.js"></script>
@@ -431,6 +436,7 @@
       // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
       enableArrow: true,
       enableHistory: true,
+      thumb: 'Small',
       scope: 100, // 可视范围
       magnifier: {
         size: 256,
@@ -1017,6 +1023,11 @@
       .catch(function (error) {
         console.log(error);
       });
+  }
+  // 交换地图和实景容器
+  function switchContent () {
+    $('#right-content').css('float', ($('#right-content').css('float') === 'left' ? 'right' : 'left'))
+    $('#left-content').css('float', $('#left-content').css('float') === 'right' ? 'left' : 'right')
   }
 </script>
 </body>

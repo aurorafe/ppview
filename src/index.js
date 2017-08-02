@@ -4,15 +4,17 @@
  */
 import merge from 'lodash/merge'
 import './polyfill/assign'
-import {Tool, FullMode, SampleMode, LocateState, defaultPref} from './config/baseConfig'
+import {defaultPref, eventName, LocateState} from './config/baseConfig'
 import mixin from './utils/mixin'
-import RotControl from './core/RotControl'
-import TextSprite from './core/TextSprite'
+// import * as utils from './utils/utils'
+// import RotControl from './core/RotControl'
+// import TextSprite from './core/TextSprite'
 import * as ajaxUtils from './utils/ajaxUtils'
-import * as Events from './events/Events'
+// import * as Events from './events/Events'
+import Core from './core/Core'
 import Observable from './events/Observable'
-class Panorama extends mixin(Observable) {
-  constructor (ele, params) {
+class Panorama extends mixin(Observable, Core) {
+  constructor (ele, params, key) {
     super()
     /**
      * 当前版本
@@ -47,6 +49,16 @@ class Panorama extends mixin(Observable) {
      * @type {boolean}
      */
     this.isPlaying = false
+    /**
+     * 当前秘钥
+     */
+    this.key = key
+
+    /**
+     * 标识
+     * @type {boolean}
+     */
+    this.disContinueFlag = false
   }
 
   /**
@@ -57,6 +69,10 @@ class Panorama extends mixin(Observable) {
     return this.version
   }
 
+  init () {
+
+  }
+
   /**
    * 获取当前目标对象
    * @returns {*}
@@ -65,7 +81,7 @@ class Panorama extends mixin(Observable) {
     if (this.targetElement) {
       return this.targetElement
     } else {
-      return null;
+      return null
     }
   }
 
@@ -81,8 +97,16 @@ class Panorama extends mixin(Observable) {
     }
   }
 
-  setPref () {
-
+  /**
+   * 设置参数
+   * @param pref
+   */
+  setPref (pref) {
+    for (let key in this.options) {
+      if (key && pref[key]) {
+        this.options[key] = pref[key]
+      }
+    }
   }
 
   /**
@@ -99,6 +123,83 @@ class Panorama extends mixin(Observable) {
    */
   isPlay () {
     return this.isPlaying
+  }
+
+  /**
+   * 根据坐标定位
+   * @param type
+   * @param ptx
+   * @param pty
+   */
+  locate (type, ptx, pty) {
+    if (this.disContinueFlag) {
+      this.dispatch(eventName.LOCATE, LocateState.busy)
+    } else {
+      this.disContinueFlag = true
+      switch (type) {
+        case -1:
+          let [h, c] = [50, 15]
+          ajaxUtils.get(w + 'ppv/php/locate.php', {
+            lon: ptx,
+            lat: pty,
+            tol: h,
+            angle: c
+          }).then(res => {
+            this.actionLoadTypeGet(res, true)
+          }).catch(error => {
+            console.warn(error)
+          })
+          break
+        case 0:
+          ajaxUtils.post(a + '/GetBranchByCoord', {
+            data: {
+              type: type,
+              x: ptx,
+              y: pty,
+              key: this.key
+            }
+          }).then(res => {
+            console.log(res)
+            je(res.d, true)
+          }).catch(error => {
+            console.warn(error)
+            this.disContinueFlag = false
+          })
+          break
+        case 3:
+          ajaxUtils.post(a + '/GetBranchByCoord', {
+            data: {
+              type: type,
+              x: ptx,
+              y: pty,
+              key: this.key
+            }
+          }).then(res => {
+            console.log(res)
+            Xe(res.d, true)
+          }).catch(error => {
+            console.warn(error)
+            this.disContinueFlag = false
+          })
+          break
+        case 4:
+          ajaxUtils.post(a + '/GetBranchByCoord', {
+            data: {
+              type: type,
+              x: ptx,
+              y: pty,
+              key: this.key
+            }
+          }).then(res => {
+            console.log(res)
+            Ye(res.d, true)
+          }).catch(error => {
+            console.warn(error)
+            this.disContinueFlag = false
+          })
+          break
+      }
+    }
   }
 }
 

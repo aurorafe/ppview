@@ -5,23 +5,42 @@
 import {defaultPref} from '../config/baseConfig'
 import isNumber from 'lodash/isNumber'
 class TextSprite extends (THREE.Object3D) {
-  constructor () {
+  constructor (params) {
     super()
-    THREE.Object3D.call(this)
+    let texture = new THREE.Texture()
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    let material = new THREE.SpriteMaterial({
+      map: texture,
+      depthTest: false
+    })
+    this.sprite = new THREE.Sprite(material)
+    this.add(this.sprite)
+    /**
+     * 当前配置
+     * @type {*}
+     */
+    this.options = params || {}
+
     /**
      * 当前默认样式
      */
-    this.style = defaultPref['label']
+    if (!this.options['style']) {
+      this.options['style'] = defaultPref['label']
+    }
     /**
      * 当前label偏移量
      * @type {[*]}
      */
-    this.offset = [0, 0]
+    if (!this.options['offset']) {
+      this.options['offset'] = [0, 0]
+    }
     /**
-     * 当前文字
-     * @type {string}
+     * 默认text不能为空或者未定义
      */
-    this.text = ''
+    if (this.options['text'] === undefined || this.options['text'] === null) {
+      this.options['text'] = ''
+    }
   }
 
   /**
@@ -29,10 +48,10 @@ class TextSprite extends (THREE.Object3D) {
    * @param style
    */
   setStyle (style) {
-    if (this.style) {
-      for (let key in this.style) {
+    if (this.options['style']) {
+      for (let key in this.options['style']) {
         if (key && style[key]) {
-          this.style[key] = style[key]
+          this.options['style'][key] = style[key]
         }
       }
       this.update()
@@ -45,9 +64,9 @@ class TextSprite extends (THREE.Object3D) {
    */
   setOffset (offset) {
     if (offset && Array.isArray(offset) && offset.length === 2) {
-      this.offset = offset
+      this.options['offset'] = offset
     } else if (arguments.length === 2 && isNumber(arguments[0]) && isNumber(arguments[1])) {
-      this.offset = [arguments[0], arguments[1]]
+      this.options['offset'] = [arguments[0], arguments[1]]
     }
     this.update()
   }
@@ -57,7 +76,7 @@ class TextSprite extends (THREE.Object3D) {
    * @param text
    */
   setText (text) {
-    this.text = text
+    this.options['text'] = text
     this.update()
   }
 
@@ -65,45 +84,36 @@ class TextSprite extends (THREE.Object3D) {
    * 更新当前label样式
    */
   update () {
-    var t = this.style.fontsize + "px " + this.style.fontface;
-    var e = document.createElement("canvas");
-    var i = e.getContext("2d");
-    i.font = t;
-    var n = i.measureText(this.text);
-    var r = n.width;
-    var a = Math.round(this.style.fontsize * .2) + this.style.borderThickness;
-    var o = r + 2 * a;
-    var s = this.style.fontsize + 2 * a;
-    var e = document.createElement("canvas");
-    var i = e.getContext("2d");
-    i.canvas.width = o;
-    i.canvas.height = s;
-    i.font = t;
-    if (this.style.borderThickness > 0) {
-      i.fillStyle = this.style.backgroundColor;
-      i.strokeStyle = this.style.borderColor;
-      i.lineWidth = this.style.borderThickness;
-      this.roundRect(i, this.style.borderThickness / 2, this.style.borderThickness / 2, o - this.style.borderThickness, s - this.style.borderThickness, this.style.borderFillet);
-      i.fillStyle = this.style.textColor;
-      i.fillText(this.text, a, this.style.fontsize + a / 2)
+    let element = document.createElement('canvas')
+    let ctx = element.getContext('2d')
+    ctx.font = this.options['style'].fontSize + 'px ' + this.options['style']['fontFamily']
+    let bbox = ctx.measureText(this.options['text'])
+    let fontWidth = Math.round(this.options['style']['fontSize'] * 0.2) + this.options['style']['borderWidth']
+    ctx.canvas.width = bbox.width + 2 * fontWidth
+    ctx.canvas.height = this.options['style'].fontSize + 2 * fontWidth
+    if (this.options['style']['borderWidth'] && this.options['style']['borderWidth'] > 0) {
+      ctx.fillStyle = this.options['style'].backgroundColor
+      ctx.strokeStyle = this.options['style'].borderColor
+      ctx.lineWidth = this.options['style'].borderWidth
+      this.roundRect(ctx, this.options['style'].borderWidth / 2, this.options['style'].borderWidth / 2, ctx.canvas.width - this.options['style'].borderWidth, ctx.canvas.height - this.options['style'].borderWidth, this.options['style'].borderRadius)
+      ctx.fillStyle = this.options['style'].textColor
+      ctx.fillText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
     } else {
-      i.strokeStyle = this.style.backgroundColor;
-      i.strokeText(this.text, a, this.style.fontsize + a / 2);
-      i.fillStyle = this.style.textColor;
-      i.fillText(this.text, a, this.style.fontsize + a / 2)
+      ctx.strokeStyle = this.options['style'].backgroundColor
+      ctx.strokeText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
+      ctx.fillStyle = this.options['style'].textColor
+      ctx.fillText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
     }
-    var h = new THREE.Texture(e);
-    h.minFilter = THREE.LinearFilter;
-    h.magFilter = THREE.LinearFilter;
-    h.needsUpdate = true;
-    this.sprite.material.map = h;
-    var c = s / this.style.fontsize;
-    var l = o / s * c;
-    var u = 1 * c;
-    var p = this.offset[0] / this.style.fontsize;
-    var d = this.offset[1] / this.style.fontsize;
-    this.sprite.scale.set(l, u, 1);
-    this.sprite.position.set(p, 0, d)
+    let texture = new THREE.Texture(element)
+    texture.minFilter = THREE.LinearFilter
+    texture.magFilter = THREE.LinearFilter
+    texture.needsUpdate = true
+    this.sprite.material.map = texture
+    let scale = ctx.canvas.height / this.options['style']['fontSize']
+    let padding = ctx.canvas.width / ctx.canvas.height * scale
+    let [ptx, pty] = [this.options['offset'][0] / this.options['style']['fontSize'], this.options['offset'][1] / this.options['style']['fontSize']]
+    this.sprite.scale.set(padding, scale, 1)
+    this.sprite.position.set(ptx, 0, pty)
   }
 
   /**
@@ -116,20 +126,21 @@ class TextSprite extends (THREE.Object3D) {
    * @param a
    */
   roundRect (t, e, i, n, r, a) {
-    n--;
-    t.beginPath();
-    t.moveTo(e + a, i);
-    t.lineTo(e + n - a, i);
-    t.quadraticCurveTo(e + n, i, e + n, i + a);
-    t.lineTo(e + n, i + r - a);
-    t.quadraticCurveTo(e + n, i + r, e + n - a, i + r);
-    t.lineTo(e + a, i + r);
-    t.quadraticCurveTo(e, i + r, e, i + r - a);
-    t.lineTo(e, i + a);
-    t.quadraticCurveTo(e, i, e + a, i);
-    t.closePath();
-    t.fill();
+    n--
+    t.beginPath()
+    t.moveTo(e + a, i)
+    t.lineTo(e + n - a, i)
+    t.quadraticCurveTo(e + n, i, e + n, i + a)
+    t.lineTo(e + n, i + r - a)
+    t.quadraticCurveTo(e + n, i + r, e + n - a, i + r)
+    t.lineTo(e + a, i + r)
+    t.quadraticCurveTo(e, i + r, e, i + r - a)
+    t.lineTo(e, i + a)
+    t.quadraticCurveTo(e, i, e + a, i)
+    t.closePath()
+    t.fill()
     t.stroke()
   }
 }
+
 export default TextSprite

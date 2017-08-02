@@ -99,6 +99,12 @@ div.popup {
   position: fixed;
   top: 50%;
 }
+
+#right-content, #left-content {
+  height: 100%;
+  width: 50%;
+  float: left;
+}
 #ppv {
   position:relative;
   width:100%;
