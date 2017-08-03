@@ -96,12 +96,12 @@ class TextSprite extends (THREE.Object3D) {
       ctx.strokeStyle = this.options['style'].borderColor
       ctx.lineWidth = this.options['style'].borderWidth
       this.roundRect(ctx, this.options['style'].borderWidth / 2, this.options['style'].borderWidth / 2, ctx.canvas.width - this.options['style'].borderWidth, ctx.canvas.height - this.options['style'].borderWidth, this.options['style'].borderRadius)
-      ctx.fillStyle = this.options['style'].textColor
+      ctx.fillStyle = this.options['style']['textColor']
       ctx.fillText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
     } else {
       ctx.strokeStyle = this.options['style'].backgroundColor
       ctx.strokeText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
-      ctx.fillStyle = this.options['style'].textColor
+      ctx.fillStyle = this.options['style']['textColor']
       ctx.fillText(this.options['text'], fontWidth, this.options['style'].fontSize + fontWidth / 2)
     }
     let texture = new THREE.Texture(element)

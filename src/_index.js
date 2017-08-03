@@ -12,6 +12,9 @@ import * as Events from './events/Events'
 const PPV = function (t) {
   var e = this;
   var control = null
+  this.getVersion = function () {
+    return "20170707"
+  };
   var i = document.getElementById(t);
   var n = document.getElementById(t);
   var r;
@@ -32,6 +35,22 @@ const PPV = function (t) {
   var x = 7.0656;
   var b = 5;
   var M = 1.1953125;
+
+  function _ () {
+    var t = document.scripts;
+    var e = "";
+    for (var i = t.length - 1; i >= 0; i--) {
+      var n = t[i].src;
+      var r = n.toLowerCase().indexOf("ppv/js/ppv.");
+      if (r >= 0) {
+        e = n.substring(0, r);
+        break
+      }
+    }
+    return e
+  }
+
+  var w = _();
   var E = new THREE.TextureLoader;
   var T;
   var S;
@@ -61,15 +80,47 @@ const PPV = function (t) {
   var Q = new THREE.MeshLambertMaterial({color: 16711935, side: THREE.FrontSide, shading: THREE.SmoothShading});
   var J = new THREE.SphereBufferGeometry(1, 100, 50);
   var K = new THREE.MeshBasicMaterial({color: 16777215, side: THREE.DoubleSide, shading: THREE.SmoothShading});
+  var tt = new THREE.RingGeometry(1, 1.2, 64);
+  var et = new THREE.MeshBasicMaterial({color: 16777215, side: THREE.DoubleSide, transparent: true, opacity: .6});
+  var it = new THREE.Mesh(tt, et);
+  var nt = new TextSprite({style: {textColor: "#ffff88", borderThickness: 0, backgroundColor: "#000000"}});
+  F.add(it);
+  F.add(nt);
   function rt (t) {
     t.minFilter = THREE.LinearFilter;
     t.magFilter = THREE.LinearFilter;
     t.generateMipmaps = false;
     t.mapping = THREE.UVMapping
   }
+
+  var at = E.load(w + "ppv/icon/arrow-e.png");
+  rt(at);
+  var ot = E.load(w + "ppv/icon/arrow-w.png");
+  rt(ot);
+  var st = E.load(w + "ppv/icon/arrow-s.png");
+  rt(st);
+  var ht = E.load(w + "ppv/icon/arrow-n.png");
+  rt(ht);
+  var ct = E.load(w + "ppv/icon/arrow-ne.png");
+  rt(ct);
+  var lt = E.load(w + "ppv/icon/arrow-nw.png");
+  rt(lt);
+  var ut = E.load(w + "ppv/icon/arrow-se.png");
+  rt(ut);
+  var pt = E.load(w + "ppv/icon/arrow-sw.png");
+  rt(pt);
+  var dt = E.load(w + "ppv/icon/history.png");
+  rt(pt);
   function ft (t) {
     if (t >= -22.5 && t < 22.5)return ht; else if (t >= 22.5 && t < 67.5)return ct; else if (t >= 67.5 && t < 112.5)return at; else if (t >= 112.5 && t < 157.5)return ut; else if (t >= 157.5 || t < -157.5)return st; else if (t >= -157.5 && t < -112.5)return pt; else if (t >= -112.5 && t < -67.5)return ot; else if (t >= -67.5 && t < -22.5)return lt
   }
+
+  var mt = w + "ppv/icon/error-imaj.jpg";
+  var vt = E.load(mt);
+  rt(vt);
+  var error_360_url = w + "ppv/icon/error-360.jpg";
+  var gt = E.load(error_360_url);
+  rt(gt);
   var yt = new THREE.Raycaster;
   var xt = new THREE.Vector2;
   var bt = new THREE.Vector2(-1, -1);
@@ -77,7 +128,256 @@ const PPV = function (t) {
   var _t = new THREE.Vector2(0, 0);
   var wt;
   var Et;
-
+  var Tt = {
+    bgcolor: 0,
+    fullView: FullMode.fill,
+    enableArrow: true,
+    enableHistory: true,
+    scope: 100,
+    thumb: "Middle",
+    magnifier: {size: 256, zoom: 5, fix: false},
+    arrows: {forward: 5, below: 1.8, lean: 15},
+    key: {del: 46, play: 32, fforward: 33, fbackward: 34, forward: 38, backward: 40, fullscreen: 120},
+    label: {
+      fontface: "微软雅黑",
+      fontsize: 15,
+      textColor: "#000000",
+      borderThickness: 1,
+      borderFillet: 6,
+      borderColor: "rgba(0,0,0,0.8)",
+      backgroundColor: "rgba(255,255,255,0.8)"
+    }
+  };
+  this.setPref = function (t) {
+    if (t.bgcolor != null) {
+      Tt.bgcolor = t.bgcolor;
+      A.setClearColor(Tt.bgcolor)
+    }
+    if (t.fullView != null) {
+      Tt.fullView = t.fullView
+    }
+    if (t.enableArrow != null) {
+      Tt.enableArrow = t.enableArrow;
+      I.visible = Tt.enableArrow
+    }
+    if (t.enableHistory != null) {
+      Tt.enableHistory = t.enableHistory;
+      N.visible = Tt.enableArrow
+    }
+    if (t.scope != null) {
+      Tt.scope = t.scope;
+      g = Tt.scope / b;
+      var e = new THREE.Vector3(0, b * g, 0);
+      var i = new THREE.Euler(Math.PI / 2, 0, 0);
+      var n = new THREE.Vector3(y * g, x * g, 1);
+      q.rotation.copy(i);
+      q.scale.copy(n);
+      q.position.copy(e)
+    }
+    if (t.arrows) {
+      if (t.arrows.forward != null) {
+        Tt.arrows.forward = t.arrows.forward
+      }
+      if (t.arrows.below != null) {
+        Tt.arrows.below = t.arrows.below
+      }
+      if (t.arrows.lean != null) {
+        Tt.arrows.lean = t.arrows.lean
+      }
+    }
+    if (t.magnifier) {
+      if (t.magnifier.size != null) {
+        Tt.magnifier.size = t.magnifier.size
+      }
+      if (t.magnifier.zoom != null) {
+        Tt.magnifier.zoom = t.magnifier.zoom
+      }
+      if (t.magnifier.fix != null) {
+        Tt.magnifier.fix = t.magnifier.fix
+      }
+    }
+    if (t.key) {
+      if (t.key.del != null) {
+        Tt.key.del = t.key.del
+      }
+      if (t.key.play != null) {
+        Tt.key.play = t.key.play
+      }
+      if (t.key.fforward != null) {
+        Tt.key.fforward = t.key.fforward
+      }
+      if (t.key.fbackward != null) {
+        Tt.key.fbackward = t.key.fbackward
+      }
+      if (t.key.forward != null) {
+        Tt.key.forward = t.key.forward
+      }
+      if (t.key.backward != null) {
+        Tt.key.backward = t.key.backward
+      }
+      if (t.key.fullscreen != null) {
+        Tt.key.fullscreen = t.key.fullscreen
+      }
+    }
+    if (t.label) {
+      if (t.label.fontface != null) Tt.label.fontface = t.label.fontface;
+      if (t.label.fontsize != null) Tt.label.fontsize = t.label.fontsize;
+      if (t.label.textColor != null) Tt.label.textColor = t.label.textColor;
+      if (t.label.borderThickness != null) Tt.label.borderThickness = t.label.borderThickness;
+      if (t.label.borderFillet != null) Tt.label.borderFillet = t.label.borderFillet;
+      if (t.label.borderColor != null) Tt.label.borderColor = t.label.borderColor;
+      if (t.label.backgroundColor != null) Tt.label.backgroundColor = t.label.backgroundColor
+    }
+  };
+  this.getPref = function () {
+    return Tt
+  };
+  this.isPlaying = function () {
+    return l
+  };
+  this.setServer = function (t) {
+    a = t
+  };
+  this.locate = function (t, e, i, n) {
+    r = n;
+    if (u) {
+      var s = {state: LocateState.busy};
+      this.onLocate(s);
+      return
+    }
+    u = true;
+    Be();
+    o = t;
+    switch (o) {
+      case -1:
+        let [h, c] = [50, 15]
+        ajaxUtils.get(w + 'ppv/php/locate.php', {
+          lon: e,
+          lat: i,
+          tol: h,
+          angle: c
+        }).then(res => {
+          qe(res, true)
+        })
+        break
+      case 0:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          je(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+      case 3:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          Xe(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+      case 4:
+        ajaxUtils.post(a + '/GetBranchByCoord', {
+          data: {
+            type: o,
+            x: e,
+            y: i,
+            key: r
+          }
+        }).then(res => {
+          console.log(res)
+          Ye(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+    }
+  }
+  this.locateByID = function (t, e, i) {
+    r = i;
+    if (u) {
+      var n = {state: LocateState.busy};
+      this.onLocate(n);
+      return
+    }
+    u = true;
+    Be();
+    o = t;
+    switch (o) {
+      case -1:
+        let [s, h] = [50, 15]
+        ajaxUtils.get(w + 'ppv/php/locate_by_id.php', {
+          id: e,
+          tol: s,
+          angle: h
+        }).then(res => {
+          qe(res, true)
+        })
+        break
+      case 0:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          je(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+      case 3:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          Xe(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+      case 4:
+        ajaxUtils.post(a + '/GetBranchByID', {
+          data: {
+            type: o,
+            id: e,
+            step: 1,
+            key: r
+          }
+        }).then(res => {
+          Ye(res.d, true)
+        }).catch(error => {
+          console.warn(error)
+          u = false
+        })
+        break
+    }
+  }
   function St (t, e) {
     if (u) {
       return
@@ -194,11 +494,22 @@ const PPV = function (t) {
     l = true;
     St(Rt(1))
   };
+  this.stop = function () {
+    l = false;
+    var t = {tool: Tool.stop};
+    this.onTool(t)
+  };
   this.setTool = function (t) {
     ae(t)
   };
   this.getTool = function () {
     return h
+  };
+  this.setSampleMode = function (t) {
+    c = t
+  };
+  this.getSampleMode = function () {
+    return c
   };
   this.getFrame = function () {
     return p

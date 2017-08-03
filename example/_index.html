@@ -9,20 +9,13 @@
 <script src="../node_modules/three/build/three.js"></script>
 <script type="text/javascript" src="../dist/Panorama.js"></script>
 <script type="text/javascript">
-  var pano = new Panorama('pano', {})
+  var userKey = '6MaPPMsBGdgxUqCVULFACSyXlnFENs7GaQSnJfin';
+  var pano = new Panorama('pano', {
+    server: 'http://211.101.37.253:8088/PPVServer.asmx',
+    thumb: ''
+  }, userKey)
+  pano.locate([108.8414, 34.187878], 3);
   console.log(pano.getVersion())
-  var label = pano.setPref()
-  document.write('<img src="' + pano.imagesSrc +'">')
-  console.log(pano.imagesSrc)
-  console.log(label)
-  pano.on('click', function (event) {
-    console.log(event)
-  })
-  window.setTimeout(function () {
-    pano.dispatch('click', {
-      value: '100'
-    })
-  }, 2000)
 </script>
 </body>
 </html>

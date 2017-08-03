@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/aurorafe",
   "dependencies": {
+    "ebook-convert": "^2.0.1",
     "gitbook": "^3.2.0"
   },
   "engines": {

@@ -90,6 +90,7 @@ export const defaultPref = {
   }
 }
 export const eventName = {
-  LOCATE: 'LOCATE'
+  LOCATE: 'LOCATE',
+  TOOL: 'TOOL'
 }
 window.Tool = Tool
