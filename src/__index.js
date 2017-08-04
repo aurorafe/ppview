@@ -1791,90 +1791,6 @@ const PPV = function (t) {
     t.stopPropagation()
   }
 
-  function xe () {
-    var t = document.createElement("div");
-    t.setAttribute("class", "ppv_toolbar");
-    n.appendChild(t);
-    var e = document.createElement("img");
-    e.setAttribute("src", "icon/查询坐标.png");
-    e.setAttribute("title", "查询坐标");
-    e.setAttribute("class", "ppv_button");
-    e.addEventListener("mousedown", oe, false);
-    t.appendChild(e);
-    var i = document.createElement("img");
-    i.setAttribute("src", "icon/测量长度.png");
-    i.setAttribute("title", "测量长度");
-    i.setAttribute("class", "ppv_button");
-    i.addEventListener("mousedown", se, false);
-    t.appendChild(i);
-    var r = document.createElement("img");
-    r.setAttribute("src", "icon/测量面积.png");
-    r.setAttribute("title", "测量面积");
-    r.setAttribute("class", "ppv_button");
-    r.addEventListener("mousedown", he, false);
-    t.appendChild(r);
-    var a = document.createElement("img");
-    a.setAttribute("src", "icon/测量垂距.png");
-    a.setAttribute("title", "测量垂距");
-    a.setAttribute("class", "ppv_button");
-    a.addEventListener("mousedown", ce, false);
-    t.appendChild(a);
-    var o = document.createElement("img");
-    o.setAttribute("src", "icon/测量立面.png");
-    o.setAttribute("title", "测量立面");
-    o.setAttribute("class", "ppv_button");
-    o.addEventListener("mousedown", le, false);
-    t.appendChild(o);
-    var s = document.createElement("img");
-    s.setAttribute("src", "icon/测量角度.png");
-    s.setAttribute("title", "测量角度");
-    s.setAttribute("class", "ppv_button");
-    s.addEventListener("mousedown", he, false);
-    t.appendChild(s);
-    var h = document.createElement("img");
-    h.setAttribute("src", "icon/测量坡度.png");
-    h.setAttribute("title", "测量坡度");
-    h.setAttribute("class", "ppv_button");
-    h.addEventListener("mousedown", pe, false);
-    t.appendChild(h);
-    var c = document.createElement("img");
-    c.setAttribute("src", "icon/创建点.png");
-    c.setAttribute("title", "创建点");
-    c.setAttribute("class", "ppv_button");
-    c.addEventListener("mousedown", de, false);
-    t.appendChild(c);
-    var l = document.createElement("img");
-    l.setAttribute("src", "icon/创建线.png");
-    l.setAttribute("title", "创建线");
-    l.setAttribute("class", "ppv_button");
-    l.addEventListener("mousedown", fe, false);
-    t.appendChild(l);
-    var u = document.createElement("img");
-    u.setAttribute("src", "icon/创建面.png");
-    u.setAttribute("title", "创建面");
-    u.setAttribute("class", "ppv_button");
-    u.addEventListener("mousedown", me, false);
-    t.appendChild(u);
-    var p = document.createElement("img");
-    p.setAttribute("src", "icon/选择对象.png");
-    p.setAttribute("title", "选择对象");
-    p.setAttribute("class", "ppv_button");
-    p.addEventListener("mousedown", ve, false);
-    t.appendChild(p);
-    var d = document.createElement("img");
-    d.setAttribute("src", "icon/删除选中对象.png");
-    d.setAttribute("title", "删除选中对象");
-    d.setAttribute("class", "ppv_button");
-    d.addEventListener("mousedown", ge, false);
-    t.appendChild(d);
-    var f = document.createElement("img");
-    f.setAttribute("src", "icon/LRS.png");
-    f.setAttribute("title", "线性参考系");
-    f.setAttribute("class", "ppv_button");
-    f.addEventListener("mousedown", ye, false);
-    t.appendChild(f)
-  }
-
   function be () {
     E.crossOrigin = "anonymous";
     R = new THREE.Scene;
@@ -2408,17 +2324,6 @@ const PPV = function (t) {
       }, false);
       i.appendChild(a)
     }
-  }
-
-  function Be () {
-    var t = document.getElementById("history_container");
-    if (t != null) {
-      var e = document.getElementById("history");
-      if (e != null) {
-        t.removeChild(e)
-      }
-    }
-    return t
   }
 
   function ke () {

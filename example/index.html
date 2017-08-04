@@ -88,6 +88,9 @@
 <script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
 <script src="./public/scripts/Bootstrap/js/bootstrap.min.js"></script>
 <script src="./public/scripts/HMap/HMap.min.js"></script>
+<script src="../node_modules/terraformer/terraformer.js"></script>
+<script src="../node_modules/terraformer-wkt-parser/dist/terraformer-wkt-parser.min.js"></script>
+<script src="../node_modules/@turf/turf/turf.min.js"></script>
 <!--<script src="./public/scripts/PPV/js/ppv.min.js"></script>-->
 <script src="../node_modules/three/build/three.js"></script>
 <script src="./public/scripts/PPV/js/ppv.min.js"></script>
@@ -188,10 +191,106 @@
       }
     }
   }
+  // 36.20299999999406
+  function getNearData (arr, item) {
+    if (arr && Array.isArray(arr) && arr.length > 0) {
+      var ms = [], lines = []
+      arr.forEach(function (item) {
+        ms.push(item[2])
+        lines.push(item)
+      })
+      lines.push([0, 0, item])
+      ms.push(item)
+      ms.sort(function (a, b) {
+        return a - b;
+      }); // 从小到大排序
+      lines.sort(function (a, b) {
+        return a[2] - b[2];
+      }); // 从小到大排序
+      // 比如查20
+      var index = ms.indexOf(item);
+      var result = item - ms[index - 1] < ms[index + 1] - item ? lines[index - 1] : lines[index + 1]
+      return result
+    }
+  };
+  // 有序数组查找最近数字
+  function closest (arr, num) {
+    var left = 0;
+    var right = arr.length - 1;
+    while (left <= right) {
+      var middle = Math.floor((right + left) / 2);
+      if (right - left <= 1) {
+        break;
+      }
+      var val = arr[middle];
+      if (val === num) {
+        return middle;
+      }
+      else if (val > num) {
+        right = middle;
+      }
+      else {
+        left = middle;
+      }
+    }
+
+    var leftValue = arr[left];
+    var rightValue = arr[right];
+    return rightValue - num > num - leftValue ? leftValue : rightValue;
+  };
+  // 无序数组查找最近数字
+  function closestno (arr, num){
+    var ret = arr[0][2], res_;
+    var distance = Math.abs(ret - num);
+    for(var i = 1; i < arr.length; i++){
+      var newDistance = Math.abs(arr[i][2] - num);
+      if(newDistance < distance){
+        distance = newDistance;
+        ret = arr[i][2];
+        res_ = arr[i]
+      }
+    }
+    return res_;
+  };
+  // 递归数据
+  function corverDG (data) {
+    var dgData = []
+    function dg (data) {
+      if (data && Array.isArray(data) && data.length > 0) {
+        data.forEach(function (item) {
+          if (item && Array.isArray(item) && item.length === 3) {
+            dgData.push(item)
+          } else {
+            dg(item)
+          }
+        })
+      }
+    }
+    dg(data);
+    return dgData
+  }
 
   // 添加实景所在路线
+  var baseData = {}
   function addLine () {
-    axios.get('./data/gl_lx.json').then(function (response) {
+    axios.get('./data/gl_lx_m.json').then(function (response) {
+      if (response['data']['features'].length > 0) {
+        response['data']['features'].forEach(function (item) {
+          if (item && item['geometry'] && item['geometry']['hasM'] && item['geometry']['paths']) {
+            baseData[item['attributes']['LXBM'] + '-' + item['attributes']['SXXFX']] = corverDG(item['geometry']['paths'])
+          }
+        })
+      }
+      console.profile()
+      console.time('计时器');
+      var it = closestno(baseData['G3001-1'], 36.20299999999406)
+      console.log(it)
+      console.timeEnd('计时器');
+      console.profileEnd();
+      var line = turf.multiLineString(response['data']['features'][0]['geometry']['paths']);
+      var pt = turf.point([109.08878973100019, 34.313625174000151]);
+      var snapped = turf.pointOnLine(line, pt, 'miles');
+      console.log(snapped)
       var feat = Maps.addPolylines(response['data']['features'], {
         layerName: 'line',
         zoomToExtent: true,

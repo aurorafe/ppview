@@ -130,6 +130,7 @@ class Panorama extends mixin(Observable, Core) {
     //   q.scale.copy(new THREE.Vector3(y * scopeFloat, x * scopeFloat, 1))
     //   q.position.copy(new THREE.Vector3(0, constants.scopeClip * scopeFloat, 0))
     // }
+    this._initThree()
   }
 
   /**
@@ -143,7 +144,7 @@ class Panorama extends mixin(Observable, Core) {
     this.perspectiveCamera.position.set(0, 0, 0)
     this.perspectiveCamera.up.set(0, 1, 0)
     // this.perspectiveCamera.lookAt(new THREE.Vector3(t.x + 0, t.y + 1, t.z + 0))
-    this.scene.add(this.perspectiveCamera)
+    this._scene.add(this.perspectiveCamera)
     let r = [
       new THREE.DirectionalLight(16777215, 0.8),
       new THREE.DirectionalLight(16777215, 0.8),

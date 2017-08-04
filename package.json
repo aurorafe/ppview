@@ -66,8 +66,10 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@turf/turf": "^4.6.1",
     "lodash": "^4.17.4",
     "openlayers": "^4.2.0",
+    "terraformer-wkt-parser": "^1.1.2",
     "three": "^0.86.0",
     "url-search-params": "^0.6.1"
   }

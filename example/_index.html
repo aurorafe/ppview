@@ -7,6 +7,8 @@
 <body>
 <div id="pano"></div>
 <script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/terraformer/terraformer.js"></script>
+<script src="../node_modules/terraformer-wkt-parser/dist/terraformer-wkt-parser.min.js"></script>
 <script type="text/javascript" src="../dist/Panorama.js"></script>
 <script type="text/javascript">
   var userKey = '6MaPPMsBGdgxUqCVULFACSyXlnFENs7GaQSnJfin';
@@ -16,6 +18,10 @@
   }, userKey)
   pano.locate([108.8414, 34.187878], 3);
   console.log(pano.getVersion())
+  var geojson = Terraformer.WKT.parse('LINESTRING (30 10 100, 10 30 200, 40 40 300)');
+  var mgeojson = Terraformer.WKT.parse('MULTILINESTRING ((30 10 100, 10 30 200, 40 40 300), (30 10 100, 10 30 200, 40 40 300))');
+  console.log(geojson)
+  console.log(mgeojson)
 </script>
 </body>
 </html>
