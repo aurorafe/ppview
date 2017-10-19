@@ -2,9 +2,307 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>实景示例</title>
+  <link rel="stylesheet" href="./public/scripts/hmap/hmap.min.css" type="text/css">
+  <style type="text/css">
+    html, body, .container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .clearfix {
+      *zoom: 1;
+    }
+    .clearfix:after {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
+
+    .menu {
+      position: absolute;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .base-button {
+      height: 30px;
+      line-height: 30px;
+      background: #1b9de8;
+      color: #ffffff;
+      border-radius: 6px;
+      border: 1px solid #bfcbd9;
+      padding: 0 10px;
+      box-shadow: 0 4px 10px rgba(73, 127, 255, .42);
+      transition: .3s;
+    }
+    .base-button:hover {
+      cursor: pointer;
+      border-color: #1b9de8;
+      color: #ffffff;
+    }
+    .map-content {
+      position: relative;
+      width: 50%;
+      height: 100%;
+      float: left;
+      overflow: hidden;
+      border: 1px solid #0f0f0f;
+      box-sizing: border-box;
+    }
+    #ppv_container {
+      width: 50%;
+      height: 100%;
+      float: left;
+      border: 1px solid #0f0f0f;
+      box-sizing: border-box;
+    }
+
+    #ppv {
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+
+    .hmap-scale-line-control {
+      left: 2.5rem;
+    }
+  </style>
 </head>
 <body>
-$END$
+<div class="container clearfix">
+  <div class="map-content" id="map">
+    <div class="menu">
+      <button class="base-button" id="switchF">切换到S41上行</button>
+      <button class="base-button" id="switchL">切换到S41下行</button>
+    </div>
+  </div>
+  <div id="ppv_container" class="pano-content">
+    <div id="ppv"></div>
+  </div>
+</div>
+<script src="./public/scripts/jquery/jquery.min.js"></script>
+<script src="./public/scripts/ResizeEnd/resizeEnd.js"></script>
+<script src="./public/scripts/hmap/hmap.js"></script>
+<script src="./public/scripts/PPV/js/ppv.min.js"></script>
+<script src="./public/scripts/axios/axios.min.js"></script>
+<script type="text/javascript">
+  var userKey = "6MaPPMsBGdgxUqCVULFACSyXlnFENs7GaQSnJfin";
+  var center = [115.4539286151873, 25.592490836194237];
+  var Maps = new HMap({
+    target: 'map',
+    controls: {
+      zoomSlider: true,
+      zoom: true,
+      rotate: true,
+      scaleLine: true,
+      attribution: true
+    },
+    view: {
+      center: center,
+      projection: 'EPSG:4326',
+      zoom: 5, // resolution
+    },
+    baseLayers: [
+      {
+        layerName: 'Google',
+        isDefault: true,
+        layerType: 'Google',
+        attribution: true,
+        layerUrl: 'http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}'
+      }
+    ]
+  });
+
+  // 监听的地图点击事件
+  Maps.on('click', function (event) {
+    // 当前坐标
+    var curCoords = event.coordinate;
+    console.info(curCoords);
+    // 目的是为了查找点击位置附近的要素
+    var feature = Maps.forEachFeatureAtPixel(event.pixel, function (feature) {
+      return feature
+    });
+
+    if (feature) {
+      // 目的是为了查找点击位置附近的要素上距离当前位置坐标最近的一个点。
+      // 因为现在切换路线只能根据坐标来切换，所以要求传入的点必须在线上（误差不能过大，不要求完全在）
+      var closestPoint = feature.getGeometry().getClosestPoint(curCoords);
+      if (closestPoint) {
+        ppv.locate(3, closestPoint[0], closestPoint[1], userKey);
+      }
+    } else {
+      window.alert('当前位置附近无要素！')
+    }
+  })
+
+  // 当页面变化刷新地图
+  $(window).resizeend({
+    delay: 50
+  }, function () {
+    Maps.updateSize();
+  });
+
+  addLine();
+
+  // 添加实景所在路线
+  function addLine () {
+    axios.get('./data/line.json').then(function (response) {
+      Maps.addPolylines(response['data']['data']['features'], {
+        layerName: 'lines',
+        zoomToExtent: true,
+        selectable: true,
+        style: {
+          stroke: {
+            strokeColor: '#1b9de8',
+            strokeWidth: 3
+          }
+        },
+        selectStyle: {
+          stroke: {
+            strokeColor: '#D81E06',
+            strokeWidth: 3
+          }
+        }
+      });
+      var point = {
+        attributes: {
+          ID: '02'
+        },
+        geometry: [115.87258481455471, 26.380662006921387],
+        geometryType: 'Point'
+      };
+      pointFeature = Maps.addPoint(point, {
+        layerName: 'point',
+        zoomToExtent: false,
+        moveable: true,
+        style: {
+          image: {
+            type: 'icon',
+            image: {
+              imageSrc: './public/icon/icon_sp.png',
+              imageAnchor: [0.5, 0.5]
+            }
+          }
+        }
+      });
+      initPano(center[0], center[1])
+    })
+  }
+
+  // 响应位置变化事件
+  function onPosition (event) {
+    var lon = event.lon;
+    var lat = event.lat;
+    var xx = 0;
+    ppv.needsUpdate = true
+    pointFeature.setGeometry(new ol.geom.Point([lon, lat]));
+    Maps.getView().animate({
+      center: [lon, lat],
+      duration: 300
+    })
+  }
+
+  // 响应角度变化事件
+  function onEye (event) {
+    var heading = event.heading;
+    var style = pointFeature.getStyle()
+    var cloneStyle = style.clone()
+    cloneStyle.getImage().setRotation(heading / 180 * Math.PI)
+    pointFeature.setStyle(cloneStyle);
+    Maps.render()
+  }
+
+  // 监听根据鼠标定位事件
+  function onLocate (event) {
+    if (event.state === 0) {
+      console.log('成功')
+    } else if (event.state === 1) {
+      console.log('类型错误')
+    } else if (event.state === 2) {
+      console.log('数据错误')
+    } else if (event.state === 3) {
+      console.log('图片错误')
+    } else if (event.state === LocateState.busy) {
+      console.log('服务忙')
+    }
+  }
+
+  // 初始化实景控件
+  function initPano (ptx, pty) {
+    ppv = new PPV("ppv");
+    // 设置服务地址
+    ppv.setServer("http://220.176.42.102:8082//PPVServer.asmx");
+//    ppv.setServer("http://211.101.37.253:8088/PPVServer.asmx");
+//    ppv.setServer("http://211.101.37.215:8013//PPVServer.asmx");
+
+    // 采样模式定义
+    ppv.setSampleMode(2); // photo摄影法，ground地面采样模式
+    // 根据坐标定位实景位置
+    ppv.locate(3, ptx, pty, userKey);
+    // 监听定位事件
+    ppv.onLocate = onLocate;
+    // 响应位置变化事件
+    ppv.onPosition = onPosition;
+    // 响应视角变化
+    ppv.onEye = onEye;
+    // 设置背景，可视范围，放大镜等工具参数
+    ppv.setPref({
+      bgcolor: 'rgb(255,255,255)',//'rgb(255,255,255)',
+      fullView: 3, // fill: 1,保持全部数据可见: trans: 2 ,镂空，露出背景，保持全部数据可见,
+      // stretch: 3 // 拉伸，充满div, clip: 4, 裁剪，充满div，数据不全
+      enableArrow: true,
+      enableHistory: true,
+      thumb: 'Small',
+      scope: 100, // 可视范围
+      magnifier: {
+        size: 256,
+        zoom: 5.0,
+        fix: true // 是否启动放大镜后，固定位置不变。另一个方式是，放大镜随鼠标移动
+      },
+      key: {
+        play: 32,		// 播放	space
+        fforward: 33,	// 快进	page up
+        fbackward: 34,	// 快退	page down
+        forward: 38,		// 前进	up
+        backward: 40,	// 后退	down
+        fullscreen: 120	// 全屏	f9
+      },
+      label: {
+        fontface: '微软雅黑',	// 字体
+        fontsize: 15,			// 字高
+        textColor: '#FFFFFF',	// 文字颜色
+        borderThickness: 1,		// 边框线宽，如果取0值，将禁用边框
+        borderFillet: 2,			// 边框圆角
+        borderColor: 'rgba(0,0,0,0.8)',				// 边框颜色
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'	// 背景颜色
+      }
+    })
+  }
+
+  // 点击切换S41上行路线
+  document.querySelector('#switchF').addEventListener('click', function (event) {
+    // 假如拿到的关键字是路线编码和上下行方向，应当有个服务根据 lxbm 和 sxxfx 字段查询对应路线
+    // 的起点坐标，然后根据查询到的起点坐标调用locate方法切换到对应路线的实景。
+    var centerF = [115.8730751500, 26.3837829500]; // S41上行起点坐标。
+    ppv.locate(3, centerF[0], centerF[1], userKey);
+  });
+
+  // 点击切换S41下行路线
+  document.querySelector('#switchL').addEventListener('click', function (event) {
+    var centerL = [115.3555804300, 24.7618026000]; // S41下行起点坐标。
+    ppv.locate(3, centerL[0], centerL[1], userKey);
+  });
+</script>
 </body>
 </html>
